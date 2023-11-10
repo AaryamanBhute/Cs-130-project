@@ -104,7 +104,7 @@ const Yahtzee = () => {
   };
 
   return (
-    <div style={{ backgroundColor: '#FADADD', minHeight: '100vh', margin: 0 }}>
+    <div style={{ backgroundColor: '#FADADD', minHeight: '100vh' }}>
       <h1 style={{ textAlign: 'center', margin: 0 }}>Yahtzee</h1>
       <p style={{ textAlign: 'center' }}>
         <a href="/" style={{ color: 'black' }}>
@@ -112,7 +112,7 @@ const Yahtzee = () => {
         </a>
       </p>
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        <button onClick={rollDice} disabled={rollsLeft === 0 || gameOver}>
+        <button onClick={rollDice} disabled={rollsLeft === 0 || gameOver} style={{cursor: 'pointer'}}>
           {rollsLeft > 0 ? `Roll Dice (${rollsLeft} roll(s) left)` : 'No more rolls left'}
         </button>
       </div>
@@ -126,6 +126,7 @@ const Yahtzee = () => {
                 style={{
                   margin: '10px',
                   background: selectedDice.includes(index + 1) ? 'lightblue' : 'transparent',
+                  cursor: 'pointer'
                 }}
                 onClick={() => handleSelection(index + 1)}
                 disabled={rollsLeft === 0}
@@ -179,6 +180,7 @@ const ScoreSection = ({ diceRollResults, handleScoreSelect, scores, rollsLeft, g
           key={category}
           onClick={() => handleScoreSelect(index + 1)}
           disabled={!canSelect || scores[index] !== null}
+          style={{cursor: (!canSelect || scores[index] !== null) ? 'default' : 'pointer'}}
         >
           {`${category} = ${scores[index] !== null ? scores[index] : allScores[index]}`}
         </button>
