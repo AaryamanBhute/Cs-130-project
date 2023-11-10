@@ -1,25 +1,8 @@
 import React, { useState } from 'react';
 
-const GameBoard = ({ code, colors, handleColorSelection, guesses, handleGuessColor, activeRow, checkGuess }) => {
+const GameBoard = ({ colors, handleColorSelection, guesses, handleGuessColor, activeRow, feedback, checkGuess, code, gameResult }) => {
   return(
     <>
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        The Code:
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        {code.map((color, index) => (
-            <div
-            key={index}
-            style={{
-                width: '20px',
-                height: '20px',
-                backgroundColor: color,
-                borderRadius: '50%',
-                margin: '10px'
-            }}
-            />
-        ))}
-        </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         Your Options:
         </div>
@@ -41,29 +24,75 @@ const GameBoard = ({ code, colors, handleColorSelection, guesses, handleGuessCol
         </div>
         {Array.from({ length: 8 }, (_, i) => i).map((row) => (
         <div key={row} style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-            {guesses.slice(row * 4, row * 4 + 4).map((color, index) => (
-            <div
-                key={index}
-                style={{
-                width: '20px',
-                height: '20px',
-                backgroundColor: color,
-                borderRadius: '50%',
-                margin: '10px',
-                cursor: 'pointer'
-                }}
-                onClick={() => handleGuessColor(row * 4 + index)}
-            />
+          {guesses.slice(row * 4, row * 4 + 4).map((color, index) => (
+          <div
+            key={index}
+            style={{
+            width: '20px',
+            height: '20px',
+            backgroundColor: color,
+            borderRadius: '50%',
+            margin: '10px',
+            cursor: 'pointer'
+            }}
+            onClick={() => handleGuessColor(row * 4 + index)}
+          />
+          ))}
+          <div style={{ display: 'flex', marginLeft: '5px', marginTop: '5px' }}>
+            {Array.from({ length: 2 }, (_, dotIndex) => (
+              <div key={dotIndex}>
+                {Array.from({ length: 2 }, (_, colIndex) => (
+                  <div key={colIndex}>
+                    {(
+                      <div
+                        style={{
+                          width: '10px',
+                          height: '10px',
+                          backgroundColor:
+                            feedback[row * 4 + colIndex * 2 + dotIndex] === 'black'
+                              ? 'black'
+                              : feedback[row * 4 + colIndex * 2 + dotIndex] === 'white'
+                              ? 'white'
+                              : 'gray',
+                          borderRadius: '50%',
+                          margin: '3px'
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
             ))}
+          </div>
         </div>
         ))}
-        {activeRow <= 7 && guesses.slice(activeRow * 4, activeRow * 4 + 4).every((color) => color !== 'black') && (
+        {activeRow <= 7 && gameResult === "IP" && guesses.slice(activeRow * 4, activeRow * 4 + 4).every((color) => color !== 'black') && (
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
           <button onClick={checkGuess} style={{ padding: '10px 20px', fontSize: '16px' }}>
             Check
           </button>
         </div>
         )}
+        {gameResult === "WIN" && (<div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        You Won!
+        </div>)}
+        {gameResult === "LOSS" && (<div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        You Lost! The Code Was:
+        </div>)}
+        {gameResult === "LOSS" && (<div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        {code.map((color, index) => (
+            <div
+            key={index}
+            style={{
+                width: '20px',
+                height: '20px',
+                backgroundColor: color,
+                borderRadius: '50%',
+                margin: '10px'
+            }}
+            />
+        ))}
+        </div>)}
     </>
   );
 };
@@ -72,9 +101,16 @@ const Mastermind = () => {
   const colors = ['#FF0000', '#FF7300', '#FFe400', '#3A9A10', '#0609C4', '#8206E5'];
   const [code, setCode] = useState([]);
   const [gameStarted, setGameStarted] = useState(false);
+  const [gameResult, setGameResult] = useState("IP");
   const [selectedColor, setSelectedColor] = useState(null);
   const [guesses, setGuesses] = useState(Array(32).fill('black'));
+  const [feedback, setFeedback] = useState(Array(32).fill('gray'));
   const [activeRow, setActiveRow] = useState(0);
+
+  const initSetup = () => {
+    generateCode();
+    setGameStarted(true);
+  }
 
   const generateCode = () => {
     const selectedColors = [];
@@ -83,7 +119,6 @@ const Mastermind = () => {
       selectedColors.push(colors[randomIndex]);
     }
     setCode(selectedColors);
-    setGameStarted(true);
   };
 
   const handleColorSelection = (color) => {
@@ -100,11 +135,11 @@ const Mastermind = () => {
   };
 
   const resetGame = () => {
-    setCode([]);
-    setGameStarted(false);
     generateCode();
+    setGameResult("IP");
     setSelectedColor(null);
     setGuesses(Array(32).fill('black'));
+    setFeedback(Array(32).fill('gray'));
     setActiveRow(0);
   };
 
@@ -127,10 +162,21 @@ const Mastermind = () => {
         }
     }
     
-    console.log("Correct colors and positions:", black);
-    console.log("Correct colors only:", white);
+    const feedbackRow = Array(black).fill('black').concat(Array(white).fill('white')).concat(Array(4 - black - white).fill('gray'));
+    setFeedback((prevFeedback) => {
+      const newFeedback = [...prevFeedback];
+      newFeedback.splice(activeRow * 4, 4, ...feedbackRow);
+      return newFeedback;
+    });
 
-    setActiveRow(activeRow + 1);
+    if (black === 4) {
+      setGameResult("WIN");
+    } else {
+      if (activeRow === 7) {
+        setGameResult("LOSS");
+      }
+      setActiveRow(activeRow + 1);
+    }
   };
 
   return (
@@ -143,23 +189,25 @@ const Mastermind = () => {
       </p>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         {!gameStarted && (
-          <button onClick={generateCode} style={{ padding: '10px 20px', fontSize: '16px' }}>
+          <button onClick={initSetup} style={{ padding: '10px 20px', fontSize: '16px' }}>
             Start Game
           </button>
         )}
       </div>
       {gameStarted && (
         <GameBoard
-          code={code}
           colors={colors}
           handleColorSelection={handleColorSelection}
           guesses={guesses}
           handleGuessColor={handleGuessColor}
           activeRow={activeRow}
+          feedback={feedback}
           checkGuess={checkGuess}
+          code={code}
+          gameResult={gameResult}
         />
       )}
-      {activeRow === 8 && (
+      {(activeRow === 8 || gameResult !== "IP") && (
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
           <button onClick={resetGame} style={{ padding: '10px 20px', fontSize: '16px' }}>
             Play Again
