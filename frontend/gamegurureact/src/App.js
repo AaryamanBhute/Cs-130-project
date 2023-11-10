@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import Home from './Home';
 import Chess from './Chess';
 import Yahtzee from './Yahtzee';
+import Mastermind from './Mastermind';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Routes>
           <Route path="/chess" element={<Chess />} />
           <Route path="/yahtzee" element={<Yahtzee />} />
+          <Route path="/mastermind" element={<Mastermind />} />
           <Route path="/" element={<Home />} />
         </Routes>
       </div>
