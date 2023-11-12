@@ -68,7 +68,12 @@ const Chessboard = () => {
   // Calculate the total width of the chessboard
   const boardWidth = gameState.board[0].length * squareSize;
 
-  return (
+  return (    
+  <div style={{backgroundColor: '#123456', height: '100vh' }}>
+    <h1 style={{ marginTop: '0px', textAlign: 'center', color: '#eeeeee' }}>Chess</h1>
+    <p style={{ marginBottom: '20px', margin: 'auto', height: '15px', width: '100px', font: 'bold 11px Arial', textDecoration: 'none', backgroundColor: '#eeeeee', color: '#333333', padding: '2px 6px 2px 6px', borderTop: '1px solid #CCCCCC', borderRight: '1px solid #333333', borderBottom: '1px solid #333333', borderLeft: '1px solid #CCCCCC', textAlign: 'center', color: '#eeeeee' }}>
+      <a href="/">Back to Home</a>
+    </p>
     <div className="chessboard-container" style={{ width: `${boardWidth}px`, margin: 'auto' }}>
       {/* Render each row */}
       {gameState.board.map((row, rowIndex) => (
@@ -79,8 +84,9 @@ const Chessboard = () => {
       ))}
 
       {/* Example: Reset button */}
-      <button onClick={resetGame}>Reset Chess Game</button>
+      <button style={{ marginTop: '20px', height: '40px' }}onClick={resetGame}>Reset Chess Game</button>
     </div>
+  </div>
   );
 };
 
