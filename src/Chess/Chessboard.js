@@ -1,10 +1,10 @@
 // Chessboard.js
 import React, { useState } from 'react';
 import { useChessGameState } from './ChessGameState';
-import { isValidMove } from './ValidateMove';
+import { validateMove } from './ValidateMove';
 
 const Chessboard = () => {
-  const { gameState, setGameState, movePiece, resetGame } = useChessGameState();
+  const { gameState, setGameState, movePiece, castle, enPassant, resetGame } = useChessGameState();
   const [selectedSquare, setSelectedSquare] = useState(null);
   const squareSize = 80;
 
@@ -13,12 +13,23 @@ const Chessboard = () => {
       // If selected square is clicked again, deselect it
       if (selectedSquare.row === row && selectedSquare.col === col) {
         setSelectedSquare(null);
+        return;
       }
       // If a square is already selected, try to move the piece
-      else if (isValidMove(gameState.board, selectedSquare.row, selectedSquare.col, row, col, gameState.white)) {
-        movePiece(selectedSquare, row, col);
-        setSelectedSquare(null); // Reset the selected square after moving
+      const move = validateMove(gameState, selectedSquare.row, selectedSquare.col, row, col);
+      console.log(move)
+      const piece = gameState.board[selectedSquare.row][selectedSquare.col];
+      if (!move.valid) {
+        return;
       }
+      if (move.castle.length > 0) {
+        castle(move.castle[0], move.castle[1], move.castle[2], move.castle[3], move.castle[4],
+               piece, selectedSquare.row, selectedSquare.col, row, col, move.specialRequirements);
+      }
+      else {
+        movePiece(piece, selectedSquare.row, selectedSquare.col, row, col, move.specialRequirements);
+      }
+      setSelectedSquare(null); // Reset the selected square after moving
     } else {
       // If no square is selected, set the clicked square as the selected square
       if (gameState.board[row][col]) {
