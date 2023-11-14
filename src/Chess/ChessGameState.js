@@ -23,7 +23,7 @@ const createInitialBoard = () => {
 
   return {
     board: orientedRows,
-    // Other properties...
+    white: isWhiteOnBottom,
   };
 };
 
@@ -39,7 +39,6 @@ export const useChessGameState = () => {
 
   const movePiece = (selectedSquare, r, c) => {
     const {row, col} = selectedSquare;
-    console.log(row + " " + col + " " + r + " " + c);
     const updatedGameState = produce(gameState, (draft) => {
       const piece = draft.board[row][col];
       draft.board[r][c] = piece;

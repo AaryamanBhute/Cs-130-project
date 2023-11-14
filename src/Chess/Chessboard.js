@@ -10,20 +10,19 @@ const Chessboard = () => {
 
   const handleSquareClick = (row, col) => {
     if (selectedSquare) {
+      // If selected square is clicked again, deselect it
+      if (selectedSquare.row === row && selectedSquare.col === col) {
+        setSelectedSquare(null);
+      }
       // If a square is already selected, try to move the piece
-      const valid = isValidMove(gameState.board, selectedSquare, row, col);
-      if (valid) {
+      else if (isValidMove(gameState.board, selectedSquare.row, selectedSquare.col, row, col, gameState.white)) {
         movePiece(selectedSquare, row, col);
         setSelectedSquare(null); // Reset the selected square after moving
-      } else {
-        // Handle invalid move (optional)
       }
     } else {
       // If no square is selected, set the clicked square as the selected square
-      const piece = gameState.board[row][col];
-      console.log(piece)
-      if (piece) {
-        setSelectedSquare({ row, col });
+      if (gameState.board[row][col]) {
+        setSelectedSquare({row, col});
       }
     }
   };
@@ -36,8 +35,6 @@ const Chessboard = () => {
     // Set the background color inline
     const squareStyle = {
       backgroundColor,
-      width: `${squareSize}px`, // Set the width and height as needed
-      height: `${squareSize}px`,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -51,7 +48,10 @@ const Chessboard = () => {
 
     return (
       <div key={`${row}-${col}`}
-        style={{ ...squareStyle, border: isSelected ? '2px solid red' : 'none' }}
+        style={{ ...squareStyle,
+          width: isSelected ? `${squareSize-4}px` : `${squareSize}px`,
+          height: isSelected ? `${squareSize-4}px` : `${squareSize}px`,
+          border: isSelected ? '2px solid red' : 'none' }}
         onClick={() => handleSquareClick(row, col)}
       >
         {piece && (

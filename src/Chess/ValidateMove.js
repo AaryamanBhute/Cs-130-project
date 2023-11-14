@@ -1,13 +1,11 @@
-export const isValidMove = (board, selectedSquare, endRow, endCol) => {
-    const {row, col} = selectedSquare;
-    const startRow = row;
-    const startCol = col;
+export const isValidMove = (board, startRow, startCol, endRow, endCol, whiteOnBottom) => {
     const piece = board[startRow][startCol];
     const targetPiece = board[endRow][endCol];
     const samePiece = piece[0] === targetPiece[0];
   
     // Ensure initial conditions
     if (!piece || samePiece || piece === targetPiece) {
+        console.log("INVALID MOVE SELECTION")
         return false;
     }
     
@@ -16,13 +14,22 @@ export const isValidMove = (board, selectedSquare, endRow, endCol) => {
     let xa = Math.abs(x);
     let y = endRow - startRow;
     let ya = Math.abs(y);
+    let topPawnColor;
+    let bottomPawnColor;
+    if (whiteOnBottom) {
+      topPawnColor = 'bpawn';
+      bottomPawnColor = 'wpawn';
+    } else {
+      topPawnColor = 'wpawn';
+      bottomPawnColor = 'bpawn';
+    }
     // Add specific rules based on the type of piece
     switch (piece) {
-      case 'wpawn':
+      case bottomPawnColor:
         valid = (((startRow === 6 && y === -2) || y === -1) && endCol === startCol && !targetPiece) || (y === -1 && xa === 1 && targetPiece);
         break;
   
-      case 'bpawn':
+      case topPawnColor:
         valid = (((startRow === 1 && y === 2) || y === 1) && endCol === startCol && !targetPiece) || (y === 1 && xa === 1 && targetPiece);
         break;
 
