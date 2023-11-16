@@ -4,8 +4,9 @@ import { useChessGameState } from './ChessGameState';
 import { validateMove } from './ValidateMove';
 
 const Chessboard = () => {
-  const { gameState, setGameState, movePiece, castle, enPassant, resetGame } = useChessGameState();
+  const { gameState, movePiece, castle, enPassant, resetGame } = useChessGameState();
   const [selectedSquare, setSelectedSquare] = useState(null);
+  const [currentPlayer, setCurrentPlayer] = useState('w');
   const squareSize = 80;
 
   const handleSquareClick = (row, col) => {
@@ -17,22 +18,29 @@ const Chessboard = () => {
       }
       // If a square is already selected, try to move the piece
       const move = validateMove(gameState, selectedSquare.row, selectedSquare.col, row, col);
-      console.log(move)
       const piece = gameState.board[selectedSquare.row][selectedSquare.col];
       if (!move.valid) {
         return;
       }
+      console.log(move);
       if (move.castle.length > 0) {
         castle(move.castle[0], move.castle[1], move.castle[2], move.castle[3], move.castle[4],
                piece, selectedSquare.row, selectedSquare.col, row, col, move.specialRequirements);
+      }
+      else if (move.enPassant.length > 0) {
+        console.log("enPassant");
+        enPassant(piece, selectedSquare.row, selectedSquare.col, row, col, move.specialRequirements);
       }
       else {
         movePiece(piece, selectedSquare.row, selectedSquare.col, row, col, move.specialRequirements);
       }
       setSelectedSquare(null); // Reset the selected square after moving
+      // After a valid move, switch the current player
+      setCurrentPlayer(currentPlayer === 'w' ? 'b' : 'w');
     } else {
       // If no square is selected, set the clicked square as the selected square
-      if (gameState.board[row][col]) {
+      const piece = gameState.board[row][col];
+      if (piece && piece[0] === currentPlayer) { // Check if the piece exists and is the correct color
         setSelectedSquare({row, col});
       }
     }
@@ -49,10 +57,7 @@ const Chessboard = () => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      cursor: 'pointer', // Add a cursor style to indicate clickable
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center', 
+      cursor: 'pointer',
     };
 
     const isSelected = selectedSquare && selectedSquare.row === row && selectedSquare.col === col;
@@ -69,20 +74,25 @@ const Chessboard = () => {
           <img
             src={require(`../assets/${piece}.png`)} // Update the path based on your asset structure
             alt={piece}
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: `${squareSize}px`, height: `${squareSize}px` }}
           />
         )}
       </div>
     );
   };
 
+  const handleResetClick = () => {
+    resetGame();
+    setSelectedSquare(null);
+  };
+
   // Calculate the total width of the chessboard
   const boardWidth = gameState.board[0].length * squareSize;
 
   return (    
-  <div style={{backgroundColor: '#123456', height: '100vh' }}>
+  <div style={{backgroundColor: '#6495ED', height: '100vh' }}>
     <h1 style={{ marginTop: '0px', textAlign: 'center', color: '#eeeeee' }}>Chess</h1>
-    <p style={{ marginBottom: '20px', margin: 'auto', height: '15px', width: '100px', font: 'bold 11px Arial', textDecoration: 'none', backgroundColor: '#eeeeee', color: '#333333', padding: '2px 6px 2px 6px', borderTop: '1px solid #CCCCCC', borderRight: '1px solid #333333', borderBottom: '1px solid #333333', borderLeft: '1px solid #CCCCCC', textAlign: 'center', color: '#eeeeee' }}>
+    <p style={{ marginBottom: '20px', margin: 'auto', height: '15px', width: '100px', font: 'bold 11px Arial', textDecoration: 'none', backgroundColor: '#eeeeee', padding: '2px 6px 2px 6px', borderTop: '1px solid #CCCCCC', borderRight: '1px solid #333333', borderBottom: '1px solid #333333', borderLeft: '1px solid #CCCCCC', textAlign: 'center', color: '#eeeeee' }}>
       <a href="/">Back to Home</a>
     </p>
     <div className="chessboard-container" style={{ width: `${boardWidth}px`, margin: 'auto' }}>
@@ -95,7 +105,7 @@ const Chessboard = () => {
       ))}
 
       {/* Example: Reset button */}
-      <button style={{ marginTop: '20px', height: '40px' }}onClick={resetGame}>Reset Chess Game</button>
+      <button style={{ marginTop: '20px', height: '40px' }}onClick={handleResetClick}>Reset Chess Game</button>
     </div>
   </div>
   );

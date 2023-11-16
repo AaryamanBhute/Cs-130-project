@@ -25,12 +25,12 @@ const createInitialBoard = () => {
   return {
     board: orientedRows,
     whiteOnBottom: isWhiteOnBottom,
+    lastMove: {},
     specialRequirements: {
       whiteShortCastle: true,
       whiteLongCastle: true,
       blackShortCastle: true,
       blackLongCastle: true,
-      lastEnPassantPosition: [],
     }
   };
 };
@@ -46,35 +46,47 @@ export const useChessGameState = () => {
   };
 
   const movePiece = (piece, startRow, startCol, endRow, endCol, specialRequirements) => {
-    const updatedGameState = produce(gameState, (draft) => {
-      draft.board[startRow][startCol] = "";
-      draft.board[endRow][endCol] = piece;
-      draft.specialRequirements = specialRequirements;
+    setGameState(() => {
+      let newGameState = produce(gameState, (draft) => {
+        draft.board[startRow][startCol] = "";
+        if (piece && piece[1] === 'p' && (endRow === 0 || endRow === 7)) {
+          draft.board[endRow][endCol] = piece[0] + 'queen';
+        } else {
+          draft.board[endRow][endCol] = piece;
+        }
+        draft.lastMove = { piece, startRow, startCol, endRow, endCol };
+        draft.specialRequirements = specialRequirements;
+      });
+      return newGameState;
     });
-    setGameState(updatedGameState);
-  }
+  };
 
   const castle = (castlePiece, castleStartRow, castleStartCol, castleEndRow, castleEndCol, piece, startRow, startCol, endRow, endCol, specialRequirements) => {
-    const updatedGameState = produce(gameState, (draft) => {
-      draft.board[castleStartRow][castleStartCol] = "";
-      draft.board[castleEndRow][castleEndCol] = castlePiece;
-      draft.board[startRow][startCol] = "";
-      draft.board[endRow][endCol] = piece;
-      draft.specialRequirements = specialRequirements;
+    setGameState(() => {
+      const newGameState = produce(gameState, (draft) => {
+        draft.board[castleStartRow][castleStartCol] = "";
+        draft.board[castleEndRow][castleEndCol] = castlePiece;
+        draft.board[startRow][startCol] = "";
+        draft.board[endRow][endCol] = piece;
+        draft.lastMove = { piece, startRow, startCol, endRow, endCol };
+        draft.specialRequirements = specialRequirements;
+      });
+      return newGameState;
     });
-    setGameState(updatedGameState);
-  }
+  };
 
-  const enPassant = (castlePiece, castleStartRow, castleStartCol, castleEndRow, castleEndCol, piece, startRow, startCol, endRow, endCol, specialRequirements) => {
-    const updatedGameState = produce(gameState, (draft) => {
-      draft.board[castleStartRow][castleStartCol] = "";
-      draft.board[castleEndRow][castleEndCol] = castlePiece;
-      draft.board[startRow][startCol] = "";
-      draft.board[endRow][endCol] = piece;
-      draft.specialRequirements = specialRequirements;
+  const enPassant = (piece, startRow, startCol, endRow, endCol, specialRequirements) => {
+    setGameState(() => {
+      const newGameState = produce(gameState, (draft) => {
+        draft.board[gameState.lastMove.endRow][gameState.lastMove.endCol] = "";
+        draft.board[startRow][startCol] = "";
+        draft.board[endRow][endCol] = piece;
+        draft.lastMove = { piece, startRow, startCol, endRow, endCol };
+        draft.specialRequirements = specialRequirements;
+      });
+      return newGameState;
     });
-    setGameState(updatedGameState);
-  }
+  };
 
   return {
     gameState,

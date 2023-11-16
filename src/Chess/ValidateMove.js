@@ -3,6 +3,7 @@ export const validateMove = (gameState, startRow, startCol, endRow, endCol) => {
     const piece = board[startRow][startCol];
     const targetPiece = board[endRow][endCol];
     const samePiece = piece[0] === targetPiece[0];
+    const lastMove = gameState.lastMove;
   
     // Ensure initial conditions
     if (!piece || samePiece || piece === targetPiece) {
@@ -20,13 +21,33 @@ export const validateMove = (gameState, startRow, startCol, endRow, endCol) => {
     // Add specific rules based on the type of piece
     switch (piece) {
       case bottomPawnColor:
-        move.valid = (((startRow === 6 && y === -2) || y === -1) && endCol === startCol && !targetPiece)
-                     || (y === -1 && xa === 1 && (targetPiece));
+        if (lastMove && lastMove.piece === topPawnColor && 
+            Math.abs(lastMove.startRow - lastMove.endRow) === 2 && 
+            Math.abs(lastMove.endCol - startCol) === 1 && 
+            lastMove.endRow - endRow === 1 && 
+            startRow === lastMove.endRow && 
+            endCol === lastMove.endCol) {
+          move.valid = true;
+          move.enPassant = [lastMove.piece, lastMove.startRow, lastMove.startCol, lastMove.endRow, lastMove.endCol];
+        } else {
+          move.valid = (((startRow === 6 && y === -2) || y === -1) && endCol === startCol && !targetPiece)
+                      || (y === -1 && xa === 1 && (targetPiece));
+        }
         break;
   
       case topPawnColor:
-        move.valid = (((startRow === 1 && y === 2) || y === 1) && endCol === startCol && !targetPiece)
-                     || (y === 1 && xa === 1 && (targetPiece));
+        if (lastMove && lastMove.piece === bottomPawnColor && 
+            Math.abs(lastMove.startRow - lastMove.endRow) === 2 && 
+            Math.abs(lastMove.endCol - startCol) === 1 && 
+            endRow - lastMove.endRow === 1 && 
+            startRow === lastMove.endRow && 
+            endCol === lastMove.endCol) {
+          move.valid = true;
+          move.enPassant = [lastMove.piece, lastMove.startRow, lastMove.startCol, lastMove.endRow, lastMove.endCol];
+        } else {
+          move.valid = (((startRow === 1 && y === 2) || y === 1) && endCol === startCol && !targetPiece)
+                      || (y === 1 && xa === 1 && (targetPiece));
+        }
         break;
 
       case 'wknight':
