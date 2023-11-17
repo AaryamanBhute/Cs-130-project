@@ -1,12 +1,13 @@
 // Chessboard.js
-import React, { useState } from 'react';
-import { useChessGameState } from './ChessGameState';
-import { validateMove } from './ValidateMove';
+import { useState, useEffect } from 'react';
+import { useChessGameState, gameLength } from './ChessGameState';
+import { getValidMoves } from './PieceMovement';
 
 const Chessboard = () => {
-  const { gameState, updateGameState, getValidMoves, resetGame } = useChessGameState();
+  const { gameState, updateGameState, resetGame, message, seconds } = useChessGameState();
   const [selectedSquare, setSelectedSquare] = useState(null);
   const [validMoves, setValidMoves] = useState([]);
+
   const squareSize = 80;
 
   const handleSquareClick = (row, col) => {
@@ -18,8 +19,9 @@ const Chessboard = () => {
         return;
       }
       // If a square is already selected, try to move the piece
-      const move = validateMove(gameState, selectedSquare.row, selectedSquare.col, row, col);
-      if (!move.valid) {
+      const move = validMoves.find(move => move.startRow === selectedSquare.row && move.startCol === selectedSquare.col && 
+                                           move.endRow === row && move.endCol === col);
+      if (!move) {
         return;
       }
       // Update the game state based on the move
@@ -42,8 +44,10 @@ const Chessboard = () => {
     // Check if the square is a valid move
     const isHighlighted = validMoves.some(move => selectedSquare.row === move.startRow && selectedSquare.col === move.startCol
                                                   && move.endRow === row && move.endCol === col);
+    const partOfLastMove = gameState.lastMove && ((gameState.lastMove.startRow === row && gameState.lastMove.startCol === col)
+                                                  || (gameState.lastMove.endRow === row && gameState.lastMove.endCol === col));
     // Calculate background color based on row and column and highlight the square if it's a valid move
-    const backgroundColor = isHighlighted ? '#83dbee' : (row + col) % 2 === 0 ? '#e8caa2' : '#523106';
+    const backgroundColor = isHighlighted ? '#83dbee' : partOfLastMove ? '#e8f078' : (row + col) % 2 === 0 ? '#e8caa2' : '#523106';
 
     // Set the background color inline
     const squareStyle = {
@@ -77,10 +81,10 @@ const Chessboard = () => {
 
   const CapturedPieces = ({ player, pieces }) => {
     return (
-      <div style={{ margin: 'auto' }}>
+      <div style={{ backgroundColor: '#eeeeee', padding: '0px 10px 0px 10px', border: '2px solid black' }}>
         <h2>{player}'s Captured Pieces:</h2>
         <ul>
-          {pieces.map((piece, index) => (
+          {pieces.map((piece) => (
               <img
                 src={require(`../assets/${piece}.png`)} // Update the path based on your asset structure
                 alt={piece}
@@ -92,41 +96,43 @@ const Chessboard = () => {
     );
   }
 
-  const Timer = () => {
-    const [seconds, setSeconds] = useState(0);
-  
-    React.useEffect(() => {
-      const interval = setInterval(() => {
-        setSeconds(seconds => seconds + 1);
-      }, 1000);
-      return () => clearInterval(interval);
-    }, []);
-  
+  const Timer = ({ player }) => {
+    const whiteSeconds = (gameLength - seconds.white) % 60;
+    const whiteTime = `${Math.floor((gameLength - seconds.white) / 60)}:${whiteSeconds < 10 ? '0' + whiteSeconds : whiteSeconds}`;
+    const blackSeconds = (gameLength - seconds.black) % 60;
+    const blackTime = `${Math.floor((gameLength - seconds.black) / 60)}:${blackSeconds < 10 ? '0' + blackSeconds : blackSeconds}`;
     return (
-      <div>
-        <h2>Game Time:</h2>
-        <p>{seconds} seconds</p>
+      <div style={{ backgroundColor: '#eeeeee', padding: '0px 10px 0px 10px', border: '2px solid black' }}>
+        <h2>{player}'s Time Remaining:</h2>
+        <h2>{player === 'White' ? whiteTime : blackTime}</h2>
       </div>
     );
-  }
-
-  const handleResetClick = () => {
-    resetGame();
-    setSelectedSquare(null);
   };
 
-  // Calculate the total width of the chessboard
-  const boardWidth = gameState.board[0].length * squareSize;
+  const handleResetClick = () => {
+    setSelectedSquare(null);
+    setValidMoves([]);
+    resetGame();
+  };
+
+  useEffect(() => {
+    if (gameState.gameOver) {
+      setValidMoves([]);
+      setSelectedSquare(null);
+      return;
+    }
+  }, [gameState.gameOver]);
 
   return (    
   <div style={{ backgroundColor: '#6495ED', height: '100vh' }}>
     <h1 style={{ marginTop: '0px', paddingTop: '40px', font: 'bold 50px Arial', textAlign: 'center', color: '#eeeeee' }}>Chess</h1>
     <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', margin: '20px' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '50px' }}>
-        <CapturedPieces player={gameState.whiteOnBottom ? 'Black' : 'White'} pieces={gameState.whiteCapturedPieces} />
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: `${squareSize*2}px` }}>
+        <CapturedPieces player={!gameState.whiteOnBottom ? 'White' : 'Black'} pieces={gameState.whiteCapturedPieces} />
+        <h1 style={{ font: 'bold 25px Arial', textAlign: 'center', color: '#eeeeee' }}>{message}</h1>
         <CapturedPieces player={gameState.whiteOnBottom ? 'White' : 'Black'} pieces={gameState.blackCapturedPieces} />
       </div>
-      <div className="chessboard-container" style={{ width: `${boardWidth}px`, border: '10px solid black', margin: 'auto', marginTop: '10px' }}>
+      <div className="chessboard-container" style={{ border: '10px solid black', margin: '20px' }}>
         {/* Render each row */}
         {gameState.board.map((row, rowIndex) => (
           <div key={rowIndex} style={{ display: 'flex' }}>
@@ -135,8 +141,9 @@ const Chessboard = () => {
           </div>
         ))}
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '50px' }}>
-        <Timer />
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: `${squareSize*5}px` }}>
+        <Timer player={!gameState.whiteOnBottom ? 'White' : 'Black'} />
+        <Timer player={gameState.whiteOnBottom ? 'White' : 'Black'} />
       </div>
     </div>
     <div style={{ display: 'flex', justifyContent: 'center', gap: '50px', margin: '20px' }}>
