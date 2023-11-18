@@ -20,7 +20,9 @@ from rest_framework import routers
 from gameguru import views
 
 router = routers.DefaultRouter()
-router.register('users', views.UserView, 'gameguru')
+#router.register('users', views.UserView, 'gameguru')
+router.register('statistics', views.StatisticView)
+router.register('chatHistory', views.ChatHistoryView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
