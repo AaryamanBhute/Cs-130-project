@@ -1,6 +1,7 @@
-// GameState.js
+// ChessGameState.js
 import { useState, useEffect } from 'react';
 import { getValidMoves, makeMove, kingUnderAttack } from './PieceMovement';
+import { makeAIMove } from './ChessAI';
 
 export const gameLength = 60 * 5; // 5 minutes
 
@@ -22,7 +23,7 @@ const createInitialBoard = () => {
 
   const orientedRows = isWhiteOnBottom ? piecesRows : piecesRows.slice().reverse();
 
-  return {
+  const initialGameState = {
     board: orientedRows,
     gameOver: false,
     blackCapturedPieces: [],
@@ -37,6 +38,12 @@ const createInitialBoard = () => {
       blackLongCastle: true,
     }
   };
+
+  if (!isWhiteOnBottom) {
+    return makeAIMove(initialGameState);
+  }
+
+  return initialGameState
 };
 
 export const useChessGameState = () => {
@@ -52,7 +59,7 @@ export const useChessGameState = () => {
   };
 
   const updateGameState = (gameState, move) => {
-    setGameState(makeMove(gameState, move));
+    setGameState(makeAIMove(makeMove(gameState, move)));
   };
 
   useEffect(() => {
