@@ -7,5 +7,5 @@ class User(models.Model):
     firstName = models.TextField()
     lastName = models.TextField()
 
-    def _str_(self):
+    def __str__(self):
         return self.username
