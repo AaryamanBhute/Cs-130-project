@@ -27,6 +27,6 @@ router.register('chatHistory', views.ChatHistoryView)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('signup/', views.signup, name='signup'),
+    path('signup/', views.signup, name='signup'),  # these are just POST methods
     path('create-statistic/', views.create_statistic, name='create-statistic'),
 ]
