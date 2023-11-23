@@ -18,6 +18,18 @@ const Signup = () => {
     } catch (error) {
       console.error('Error signing up:', error);
     }
+
+    try {
+        const response = await axios.post('http://127.0.0.1:8000/create-statistic/', {
+          username: username,
+        });
+  
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error creating statistic for user:', error);
+      }
+
+
   };
 
   return (

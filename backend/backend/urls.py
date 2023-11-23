@@ -28,4 +28,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('signup/', views.signup, name='signup'),
+    path('create-statistic/', views.create_statistic, name='create-statistic'),
 ]
