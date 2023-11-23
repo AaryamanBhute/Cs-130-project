@@ -27,4 +27,5 @@ router.register('chatHistory', views.ChatHistoryView)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('signup/', views.signup, name='signup'),
 ]
