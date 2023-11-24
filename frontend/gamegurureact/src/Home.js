@@ -16,7 +16,7 @@ const Home = () => {
         >
           Login
         </button>
-        <a href="/signup"> {/* Link to Signup */}
+        <a href="/signup"> {}
           <button
             style={{
               backgroundColor: 'blue',
