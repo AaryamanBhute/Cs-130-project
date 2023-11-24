@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import StatisticSerializer, ChatHistorySerializer
+from .serializers import StatisticSerializer, ChatHistorySerializer, UserSerializer
 from .models import Statistic, ChatHistory
 
 from django.contrib.auth.models import User
@@ -66,4 +66,9 @@ def create_statistic(request):
         return Response({'message': 'Statistic created successfully'}, status=status.HTTP_201_CREATED)
     else:
         return Response({'error': 'Invalid method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-    
+
+@api_view(['GET'])
+def get_user_info(request):
+    users = User.objects.all()
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)

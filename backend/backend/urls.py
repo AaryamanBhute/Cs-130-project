@@ -29,4 +29,6 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('signup/', views.signup, name='signup'),  # these are just POST methods for creating user and statistic from signup button
     path('create-statistic/', views.create_statistic, name='create-statistic'),
+    path('get-user-info/', views.get_user_info, name='get-user-info'),
+
 ]

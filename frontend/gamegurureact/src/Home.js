@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { UserContext } from './UserContext';
 
 const Home = () => {
+  const { currentUser } = useContext(UserContext);
+
   return (
     <div style={{ backgroundColor: 'forestgreen', height: '100vh' }}>
       <h1 style={{ textAlign: 'center', margin: 0 }}>Welcome to Game Guru!</h1>
+      {currentUser ? (
+        <p style={{ textAlign: 'center' }}>Hello, {currentUser}!</p>
+      ) : (
+        <p style={{ textAlign: 'center' }}>Sign up / Sign in :)</p>
+      )}
       <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
         <button
           style={{
