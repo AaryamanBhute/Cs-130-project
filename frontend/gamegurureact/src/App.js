@@ -1,8 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './Home';
-import Chess from './Chess';
+import Chessboard from './Chess/Chessboard';
 import Yahtzee from './Yahtzee';
+import Mastermind from './Mastermind';
 import Signup from './Signup';
 
 function App() {
@@ -10,8 +11,9 @@ function App() {
     <Router>
       <div>
         <Routes>
-          <Route path="/chess" element={<Chess />} />
+          <Route path="/chess" element={<Chessboard />} />
           <Route path="/yahtzee" element={<Yahtzee />} />
+          <Route path="/mastermind" element={<Mastermind />} />
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
