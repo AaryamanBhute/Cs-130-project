@@ -4,6 +4,7 @@ import Home from './Home';
 import Chessboard from './Chess/Chessboard';
 import Yahtzee from './Yahtzee';
 import Mastermind from './Mastermind';
+import Signup from './Signup';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/yahtzee" element={<Yahtzee />} />
           <Route path="/mastermind" element={<Mastermind />} />
           <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       </div>
     </Router>

@@ -16,6 +16,20 @@ const Home = () => {
         >
           Login
         </button>
+        <a href="/signup"> {/* Link to Signup */}
+          <button
+            style={{
+              backgroundColor: 'blue',
+              color: 'white',
+              padding: '10px 20px',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              marginLeft: '10px',
+            }}
+          >
+            Signup
+          </button>
+        </a>
       </div>
       <p style={{ textAlign: 'center' }}>
         <a href="/chess">Chess</a> | <a href="/yahtzee">Yahtzee</a> | <a href="/mastermind">Mastermind</a>
