@@ -4,16 +4,12 @@ from .serializers import StatisticSerializer, ChatHistorySerializer, UserSeriali
 from .models import Statistic, ChatHistory
 
 from django.contrib.auth.models import User
+from django.contrib.auth import login
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
 # Create your views here.
-
-#class UserView(viewsets.ModelViewSet):
-#    serializer_class = UserSerializer
-#    queryset = User.objects.all()
-
 class StatisticView(viewsets.ModelViewSet):
     serializer_class = StatisticSerializer
     queryset = Statistic.objects.all()
@@ -72,3 +68,59 @@ def get_user_info(request):
     users = User.objects.all()
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def get_user_session(request, format=None):
+    #doesn't persist from previous request
+    content = {
+        'user': str(request.user),  # `django.contrib.auth.User` instance.
+    }
+    print("hi")
+    print(content)
+    return Response(content)
+
+@api_view(['POST'])
+def authenticate_user(request):
+    if request.method == 'POST':
+        username = request.data.get('username')
+        password = request.data.get('password')
+        print("authenticating")
+        if not (username and password):
+            return Response({'error': 'Username and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            user = User.objects.get(username=username)
+            if not user.check_password(password): 
+                return Response({'error': 'Incorrect password'})
+            #request.session["username"] = username
+            login(request, user)
+            print(request.user)
+            print("user logged in")
+
+            return Response({'message': 'User successfully authenticated'}, status=status.HTTP_201_CREATED)
+        except:
+            return Response({'error': 'Invalid username'})
+
+    else:
+        return Response({'error': 'Invalid method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    
+@api_view(['POST'])
+def change_pwd(request):
+    if request.method == 'POST': 
+        username = request.data.get('username')
+        new_password = request.data.get('password')
+
+        if not (username and new_password):
+            return Response({'error': 'Username and new password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.get(username=username)
+        if user is None:
+            return Response({'error': 'Invalid username'})
+        
+        user.set_password(new_password)
+
+        print("password changed")
+        #then log them in as well? 
+        return Response({'message': 'password changed successfully'}, status=status.HTTP_201_CREATED)
+    else:
+        return Response({'error': 'Invalid method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    

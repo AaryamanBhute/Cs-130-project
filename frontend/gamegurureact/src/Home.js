@@ -13,6 +13,7 @@ const Home = () => {
         <p style={{ textAlign: 'center' }}>Sign up / Sign in :)</p>
       )}
       <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
+      <a href="/login">
         <button
           style={{
             backgroundColor: 'black',
@@ -24,6 +25,8 @@ const Home = () => {
         >
           Login
         </button>
+        </a>
+        
         <a href="/signup"> {}
           <button
             style={{
