@@ -5,6 +5,7 @@ from .models import Statistic, ChatHistory
 
 from django.contrib.auth.models import User
 from django.contrib.auth import login
+from django.contrib.sessions.models import Session
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -47,10 +48,10 @@ def create_statistic(request):
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
         # create Statistic associated with the user
-        statistic = Statistic.objects.create(
+        chessStatistic = Statistic.objects.create(
             username=user,
             ### these are placeholders for now
-            gameType='hehe xd',
+            gameType='chess',
             gamesPlayed=0,
             gamesWon=0,
             timePlayed=0.0,
@@ -58,7 +59,29 @@ def create_statistic(request):
             ###
             # etc
         )
-        print("SICK, stat created")
+        mastermindStatistic = Statistic.objects.create(
+            username=user,
+            ### these are placeholders for now
+            gameType='mastermind',
+            gamesPlayed=0,
+            gamesWon=0,
+            timePlayed=0.0,
+            chatHistory=None,
+            ###
+            # etc
+        )
+        yahtzeeStatistic = Statistic.objects.create(
+            username=user,
+            ### these are placeholders for now
+            gameType='yahtzee',
+            gamesPlayed=0,
+            gamesWon=0,
+            timePlayed=0.0,
+            chatHistory=None,
+            ###
+            # etc
+        )
+        print("SICK, stats created")
         return Response({'message': 'Statistic created successfully'}, status=status.HTTP_201_CREATED)
     else:
         return Response({'error': 'Invalid method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -75,7 +98,11 @@ def get_user_session(request, format=None):
     content = {
         'user': str(request.user),  # `django.contrib.auth.User` instance.
     }
+    user = request.session.get('curr_user')
+
+    #user = curr_user
     print("hi")
+    print(user)
     print(content)
     return Response(content)
 
@@ -91,9 +118,11 @@ def authenticate_user(request):
             user = User.objects.get(username=username)
             if not user.check_password(password): 
                 return Response({'error': 'Incorrect password'})
-            #request.session["username"] = username
+            request.session['curr_user'] = user.username
+            request.session.modified = True
             login(request, user)
             print(request.user)
+            curr_user = user.username
             print("user logged in")
 
             return Response({'message': 'User successfully authenticated'}, status=status.HTTP_201_CREATED)
@@ -106,9 +135,10 @@ def authenticate_user(request):
 @api_view(['POST'])
 def change_pwd(request):
     if request.method == 'POST': 
+        print("hi")
         username = request.data.get('username')
-        new_password = request.data.get('password')
-
+        new_password = request.data.get('new_password')
+        print(username, new_password)
         if not (username and new_password):
             return Response({'error': 'Username and new password are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -117,6 +147,7 @@ def change_pwd(request):
             return Response({'error': 'Invalid username'})
         
         user.set_password(new_password)
+        user.save()
 
         print("password changed")
         #then log them in as well? 
