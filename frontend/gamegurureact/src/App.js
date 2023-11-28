@@ -5,6 +5,8 @@ import Chessboard from './Chess/Chessboard';
 import Yahtzee from './Yahtzee';
 import Mastermind from './Mastermind';
 import Signup from './Signup';
+import Login from './Login';
+import ChangePwd from './ChangePwd';
 import { UserProvider } from './UserContext';
 
 function App() {
@@ -18,6 +20,8 @@ function App() {
             <Route path="/mastermind" element={<Mastermind />} />
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element= {<Login />} />
+            <Route path="/reset-password" element={<ChangePwd />} />
           </Routes>
         </div>
       </UserProvider>

@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.sessions.models import Session
 from .models import Statistic, ChatHistory
 # Register your models here.
 
@@ -14,3 +15,9 @@ class ChatHistoryAdmin(admin.ModelAdmin):
 #admin.site.register(User, UserAdmin)
 admin.site.register(Statistic, StatisticAdmin)
 admin.site.register(ChatHistory, ChatHistoryAdmin)
+
+class SessionAdmin(admin.ModelAdmin):
+    def _session_data(self, obj):
+        return obj.get_decoded()
+    list_display = ['session_key', '_session_data', 'expire_date']
+admin.site.register(Session, SessionAdmin)
