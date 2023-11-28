@@ -8,6 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { setCurrentUser } = useContext(UserContext);
+  var {errorMessage} = false;
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -26,19 +27,25 @@ const Login = () => {
         // redirect to home page after successful login
         navigate('/');
       }
-
-      try {
-        await axios.get('http://127.0.0.1:8000/get-user-session/');
+      else {
+        errorMessage = String(response.data);
+        console.log(errorMessage);
+        navigate('/login');
       }
-      catch (err) {
-        console.error("error");
-      }
-
     } catch (error) {
       console.error('Error logging in:', error);
-      //redirect to sign up page
-      navigate('/signup');
+      errorMessage = 'Error logging in: ' + error;
+      //will display error message
     }
+
+    try {
+      await axios.get('http://127.0.0.1:8000/get-user-session/');
+    }
+    catch (err) {
+      console.error("error");
+    }
+
+
   };
 
   const handleChangePwd = async (e) => {    
@@ -67,27 +74,44 @@ const Login = () => {
 
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+    <div style={{display: 'flex', justifyContent: 'center', backgroundColor: '#a4bdbb', height: '100vh'}}>
+      <div className="loginBox" style={{gap: '20px', backgroundColor: '#88aab5', margin: '150px', padding: '50px'}}>
+      <h2 style={{marginTop: '0px', paddingTop: '20px', font:'bold 50px Arial', textAlign: 'center'}}>GameGuru Login</h2>
+      <form onSubmit={handleLogin} style={{justifyContent: 'center', background: '#a4bdbb', border: '10px solid rgba(122, 163, 157, .5)'}}>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
         <input
           type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          style={{justifyContent: 'center', marginTop: '0px', paddingTop: '5px', font:'15px Arial', textAlign: 'center', color: 'black', background: 'aliceblue', margin: '2px'}}
         />
+        </div>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          style={{justifyContent: 'center', marginTop: '0px', paddingTop: '5px', font:'15px Arial', textAlign: 'center', color: 'black', background: 'aliceblue', margin: '8px'}}
         />
+        </div>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
         <button type="submit">Login</button>
+        </div>
       </form>
-      <h2>Forgot your password?</h2>
-      <form onSubmit={handleChangePwd}>
+      <h2 style={{textAlign: 'center'}}>First time user?</h2>
+      <a href="/signup" style={{display: 'flex', justifyContent: 'center'}}>
+        <button type="submit">Create New Account</button>
+      </a>
+      <h2 style={{textAlign: 'center'}}>Forgot your password?</h2>
+      <a href='/reset-password' style={{display: 'flex', justifyContent: 'center'}}>
         <button type="submit">Reset Password</button>
-      </form>
+      </a>
+      {errorMessage==false ? (
+        <p style={{ textAlign: 'center' }}>Error: {errorMessage}!</p>
+      ) : (<></>)}
+      </div>
     </div>
   );
 };
