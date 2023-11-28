@@ -7,6 +7,7 @@ import Mastermind from './Mastermind';
 import Signup from './Signup';
 import Login from './Login';
 import ChangePwd from './ChangePwd';
+import Dashboard from './Dashboard';
 import { UserProvider } from './UserContext';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element= {<Login />} />
             <Route path="/reset-password" element={<ChangePwd />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </div>
       </UserProvider>

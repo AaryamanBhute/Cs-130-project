@@ -12,6 +12,21 @@ const Home = () => {
       ) : (
         <p style={{ textAlign: 'center' }}>Sign up / Sign in :)</p>
       )}
+      <div style={{ position: 'absolute', top: '10px', left: '10px' }}>
+      <a href="/dashboard">
+        <button
+          style={{
+            backgroundColor: 'black',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '10px',
+            cursor: 'pointer',
+          }}
+        >
+          View Player Stats
+        </button>
+        </a>
+      </div>
       <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
       <a href="/login">
         <button
