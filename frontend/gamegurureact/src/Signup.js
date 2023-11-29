@@ -1,13 +1,11 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { UserContext } from './UserContext';
 
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { setCurrentUser } = useContext(UserContext);
   var errorMessage = false;
 
   const handleSignup = async (e) => {
@@ -23,7 +21,7 @@ const Signup = () => {
 
       if (response.status === 201) {
         // set the current user in the context after successful signup
-        setCurrentUser(username);
+        localStorage.setItem('username', username)
         // redirect to home page after successful signup
         navigate('/');
       }

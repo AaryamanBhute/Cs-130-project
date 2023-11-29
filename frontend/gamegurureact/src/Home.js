@@ -1,14 +1,23 @@
-import React, { useContext } from 'react';
-import { UserContext } from './UserContext';
+import React, { useState, useEffect, useContext } from 'react';
 
 const Home = () => {
-  const { currentUser } = useContext(UserContext);
+  //const [username, setUsername] = useState("");
+  //const [password, setPassword] = useState("");
+  const [user, setUser] = useState()
+
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem("username");
+    if (loggedInUser) {
+      const foundUser = loggedInUser;
+      setUser(foundUser);
+    }
+  }, []);
 
   return (
     <div style={{ backgroundColor: 'forestgreen', height: '100vh' }}>
       <h1 style={{ textAlign: 'center', margin: 0 }}>Welcome to Game Guru!</h1>
-      {currentUser ? (
-        <p style={{ textAlign: 'center' }}>Hello, {currentUser}!</p>
+      {user ? (
+        <p style={{ textAlign: 'center' }}>Hello, {user}!</p>
       ) : (
         <p style={{ textAlign: 'center' }}>Sign up / Sign in :)</p>
       )}

@@ -8,12 +8,10 @@ import Signup from './Signup';
 import Login from './Login';
 import ChangePwd from './ChangePwd';
 import Dashboard from './Dashboard';
-import { UserProvider } from './UserContext';
 
 function App() {
   return (
     <Router>
-      <UserProvider>
         <div>
           <Routes>
             <Route path="/chess" element={<Chessboard />} />
@@ -26,7 +24,6 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </div>
-      </UserProvider>
     </Router>
   );
 }
