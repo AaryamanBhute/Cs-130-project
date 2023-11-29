@@ -5,8 +5,9 @@ import axios from 'axios';
 const ChangePwd = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const navigate = useNavigate();
-  var {errorMessage} = false;
+  const [errorMessage, setError] = useState('');
 
   const handleChangePwd = async (e) => {
     e.preventDefault();
@@ -14,6 +15,7 @@ const ChangePwd = () => {
     try {
       const response = await axios.post('http://127.0.0.1:8000/change-pwd/', {
         username: username,
+        email: email,
         new_password: password,
       });
 
@@ -26,13 +28,12 @@ const ChangePwd = () => {
         navigate('/');
       }
       else {
-        errorMessage = String(response.data);
-        console.log(errorMessage);
-        navigate('/login');
+        setError(response.data.message);
+        console.log(response.data);
       }
     } catch (error) {
       console.error('Error logging in:', error);
-      errorMessage = 'Error logging in: ' + error;
+      setError(error.toString());
       //will display error message
     }
 
@@ -40,6 +41,7 @@ const ChangePwd = () => {
       await axios.get('http://127.0.0.1:8000/get-user-session/');
     }
     catch (err) {
+      setError(err);
       console.error("error");
     }
 
@@ -62,11 +64,20 @@ const ChangePwd = () => {
         </div>
         <div style={{display: 'flex', justifyContent: 'center'}}>
         <input
+          type="text"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{justifyContent: 'center', marginTop: '0px', paddingTop: '5px', font:'15px Arial', textAlign: 'center', color: 'black', background: 'aliceblue', margin: '6px'}}
+        />
+        </div>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+        <input
           type="password"
           placeholder="New Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{justifyContent: 'center', marginTop: '0px', paddingTop: '5px', font:'15px Arial', textAlign: 'center', color: 'black', background: 'aliceblue', margin: '8px'}}
+          style={{justifyContent: 'center', marginTop: '0px', paddingTop: '5px', font:'15px Arial', textAlign: 'center', color: 'black', background: 'aliceblue', margin: '4px'}}
         />
         </div>
         <div style={{display: 'flex', justifyContent: 'center'}}>
@@ -77,9 +88,9 @@ const ChangePwd = () => {
       <a href="/signup" style={{display: 'flex', justifyContent: 'center'}}>
         <button type="submit">Create New Account</button>
       </a>
-      {errorMessage==false ? (
-        <p style={{ textAlign: 'center' }}>Error: {errorMessage}!</p>
-      ) : (<></>)}
+      {errorMessage && (
+        <p style={{ textAlign: 'center' }}>Error: {errorMessage.toString()}!</p>
+      )}
       </div>
     </div>
   );

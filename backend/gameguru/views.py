@@ -24,11 +24,12 @@ def signup(request):
     if request.method == 'POST':
         username = request.data.get('username')
         password = request.data.get('password')
+        email = request.data.get('email')
 
         if not (username and password):
             return Response({'error': 'Username and Password are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = User.objects.create_user(username=username, password=password)
+        user = User.objects.create_user(username=username, email=email, password=password)
 
         print("YAYYY, user created")
         return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
@@ -96,16 +97,14 @@ def get_user_info(request):
 @api_view(['GET'])
 def get_user_statistics(request):
     username = request.query_params.get('username')
-    print("OKIE", username)
+    print(username)
     if not username:
         return Response({'error': 'Username not provided in query parameters'}, status=status.HTTP_400_BAD_REQUEST)
 
-    user = get_object_or_404(User, username=username)
+    user = get_object_or_404(username=username)
     statistics = Statistic.objects.filter(username=user)
-
     if not statistics.exists():
         return Response({'error': 'Statistics not found for this user'}, status=status.HTTP_404_NOT_FOUND)
-
     serialized_statistics = []
     for stat in statistics:
         serialized_stat = {
@@ -165,14 +164,17 @@ def change_pwd(request):
     if request.method == 'POST': 
         print("hi")
         username = request.data.get('username')
+        email = request.data.get('email')
         new_password = request.data.get('new_password')
-        print(username, new_password)
-        if not (username and new_password):
-            return Response({'error': 'Username and new password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        print(username, email, new_password)
+        if not (username and email and new_password):
+            return Response({'error': 'Username, email, and new password are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = User.objects.get(username=username)
         if user is None:
             return Response({'error': 'Invalid username'})
+        if user.email != email:
+            return Response({'error': 'Invalid email'})
         
         user.set_password(new_password)
         user.save()

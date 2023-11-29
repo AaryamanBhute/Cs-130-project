@@ -6,7 +6,7 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  var {errorMessage} = false;
+  const [errorMessage, setError] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -25,13 +25,13 @@ const Login = () => {
         navigate('/');
       }
       else {
-        errorMessage = String(response.data);
-        console.log(errorMessage);
+        setError(response.data.error);
+        console.log(response.data);
         navigate('/login');
       }
     } catch (error) {
       console.error('Error logging in:', error);
-      errorMessage = 'Error logging in: ' + error;
+      setError(error.toString());
       //will display error message
     }
 
@@ -39,36 +39,12 @@ const Login = () => {
       await axios.get('http://127.0.0.1:8000/get-user-session/');
     }
     catch (err) {
+      setError(err.toString());
       console.error("error");
     }
 
 
   };
-
-  const handleChangePwd = async (e) => {    
-    e.preventDefault();
-    //assumes that the new pwd is entered in pwd spot for login (fix later)
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/change-pwd/', {
-        username: username,
-        new_password: password,
-      });
-
-      console.log(response.data);
-
-      if (response.status === 201) {
-        // set the current user in the context after successful login
-        localStorage.setItem('username', username)
-        // redirect to home page after successful login
-        navigate('/');
-      }
-
-    } catch (error) {
-      console.error('Error logging in:', error);
-      //redirect to sign up page
-      navigate('/signup');
-    }};
-
 
   return (
     <div style={{display: 'flex', justifyContent: 'center', backgroundColor: '#a4bdbb', height: '100vh'}}>
@@ -105,9 +81,9 @@ const Login = () => {
       <a href='/reset-password' style={{display: 'flex', justifyContent: 'center'}}>
         <button type="submit">Reset Password</button>
       </a>
-      {errorMessage==false ? (
-        <p style={{ textAlign: 'center' }}>Error: {errorMessage}!</p>
-      ) : (<></>)}
+      {errorMessage && (
+        <p style={{ textAlign: 'center' }}>Error: {errorMessage.toString()}!</p>
+      )}
       </div>
     </div>
   );

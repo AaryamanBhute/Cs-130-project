@@ -5,8 +5,9 @@ import axios from 'axios';
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const navigate = useNavigate();
-  var errorMessage = false;
+  const [errorMessage, setError] = useState('');
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -14,6 +15,7 @@ const Signup = () => {
     try {
       const response = await axios.post('http://127.0.0.1:8000/signup/', {
         username: username,
+        email: email,
         password: password,
       });
 
@@ -26,7 +28,7 @@ const Signup = () => {
         navigate('/');
       }
       else {
-        errorMessage = String(response.data);
+        setError(response.data.message);
       }
       try {
         const response = await axios.post('http://127.0.0.1:8000/create-statistic/', {
@@ -35,17 +37,15 @@ const Signup = () => {
   
         console.log(response.data);
       } catch (error) {
+        setError(error.toString())
         console.error('Error creating statistic for user:', error);
       }
 
     } catch (error) {
+      setError(error.toString());
       console.error('Error signing up:', error);
       errorMessage = 'Error signing up: ' + String(error);
     }
-
-    //this can be done better later on, like once a user finishes a game this is triggered
-
-
   };
 
   return (
@@ -64,20 +64,35 @@ const Signup = () => {
         </div>
         <div style={{display: 'flex', justifyContent: 'center'}}>
         <input
+          type="text"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{justifyContent: 'center', marginTop: '0px', paddingTop: '5px', font:'15px Arial', textAlign: 'center', color: 'black', background: 'aliceblue', margin: '8px'}}
+        />
+        </div>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+        <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{justifyContent: 'center', marginTop: '0px', paddingTop: '5px', font:'15px Arial', textAlign: 'center', color: 'black', background: 'aliceblue', margin: '8px'}}
+          style={{justifyContent: 'center', marginTop: '0px', paddingTop: '5px', font:'15px Arial', textAlign: 'center', color: 'black', background: 'aliceblue', margin: '4px'}}
         />
         </div>
         <div style={{display: 'flex', justifyContent: 'center'}}>
         <button type="submit">Sign up</button>
         </div>
       </form>
-      {errorMessage!=false ? (
-        <p style={{ textAlign: 'center' }}>Error: {errorMessage}!</p>
-      ) : (<></>)}
+        <h2 style={{textAlign: 'center'}}>Already have an account?</h2>
+      <a href="/login" style={{display: 'flex', justifyContent: 'center'}}>
+        <button type="submit">Login</button>
+      </a>
+      <div>
+      {errorMessage && (
+        <p style={{ textAlign: 'center' }}>Error: {errorMessage.toString()}!</p>
+      )}
+      </div>
       </div>
     </div>
   );
