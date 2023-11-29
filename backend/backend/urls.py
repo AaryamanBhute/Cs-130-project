@@ -20,9 +20,18 @@ from rest_framework import routers
 from gameguru import views
 
 router = routers.DefaultRouter()
-router.register('users', views.UserView, 'gameguru')
+#router.register('users', views.UserView, 'gameguru')
+router.register('statistics', views.StatisticView)
+router.register('chatHistory', views.ChatHistoryView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('signup/', views.signup, name='signup'),  # these are just POST methods for creating user and statistic from signup button
+    path('create-statistic/', views.create_statistic, name='create-statistic'),
+    path('get-user-info/', views.get_user_info, name='get-user-info'),
+    path('authenticate-user/', views.authenticate_user, name='authenticate-user'),
+    path('change-pwd/', views.change_pwd, name='change-pwd'),
+    path('get-user-session/', views.get_user_session, name='get-user-session'),
+    path('get-user-statistics/', views.get_user_statistics, name='get-user-statistics'),
 ]
