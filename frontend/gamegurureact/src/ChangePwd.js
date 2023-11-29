@@ -28,7 +28,7 @@ const ChangePwd = () => {
         navigate('/');
       }
       else {
-        setError(response.data.message);
+        setError(response.data.error);
         console.log(response.data);
       }
     } catch (error) {

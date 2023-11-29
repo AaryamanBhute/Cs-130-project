@@ -26,25 +26,25 @@ const Signup = () => {
         localStorage.setItem('username', username)
         // redirect to home page after successful signup
         navigate('/');
+        //set stats for new user
+        try {
+          const response = await axios.post('http://127.0.0.1:8000/create-statistic/', {
+            username: username,
+          });
+    
+          console.log(response.data);
+        } catch (error) {
+          setError(error.toString())
+          console.error('Error creating statistic for user:', error);
+        }
       }
       else {
-        setError(response.data.message);
+        console.log(response.data.error);
+        setError(response.data.error);
       }
-      try {
-        const response = await axios.post('http://127.0.0.1:8000/create-statistic/', {
-          username: username,
-        });
-  
-        console.log(response.data);
-      } catch (error) {
-        setError(error.toString())
-        console.error('Error creating statistic for user:', error);
-      }
-
     } catch (error) {
       setError(error.toString());
       console.error('Error signing up:', error);
-      errorMessage = 'Error signing up: ' + String(error);
     }
   };
 

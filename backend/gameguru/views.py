@@ -26,13 +26,17 @@ def signup(request):
         password = request.data.get('password')
         email = request.data.get('email')
 
-        if not (username and password):
-            return Response({'error': 'Username and Password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not (username and email and password):
+            return Response({'error': 'Username, email, and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        try: 
+            user = User.objects.create_user(username=username, email=email, password=password)
 
-        user = User.objects.create_user(username=username, email=email, password=password)
-
-        print("YAYYY, user created")
-        return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
+            print("YAYYY, user created")
+            return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
+        except Exception as e: 
+            print(e)
+            str(e)
+            return Response({'error': str(e)})
     else:
         return Response({'error': 'Invalid method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
