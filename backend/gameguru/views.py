@@ -123,6 +123,25 @@ def create_statistic(request):
                             s.delete()
                 elif game_type == "yahtzee":
                     print("yahtzee")
+                    for s in statistics:
+                        if s.gameType == "yahtzee":
+                            if result:
+                                gw = 1 + s.gamesWon
+                            else:
+                                gw = s.gamesWon
+                            
+                            mastermindStatistic = Statistic.objects.create(
+                                username=user,
+                                ### these are placeholders for now
+                                gameType='yahtzee',
+                                gamesPlayed=1 + s.gamesPlayed,
+                                gamesWon=gw,
+                                timePlayed=time + s.timePlayed,
+                                chatHistory=None,
+                                ###
+                                # etc
+                            )
+                            s.delete()
                 else:
                     return Response({'error': 'Invalid game query parameter'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
                 
