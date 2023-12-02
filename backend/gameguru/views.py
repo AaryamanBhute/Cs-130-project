@@ -48,11 +48,12 @@ def create_statistic(request):
         time = request.data.get('timePlayed')
         result = request.data.get('result')
 
-        print("tyler1", time, result)
+        print("tyler1", username, time, result)
 
         game_type = request.query_params.get('gameType')
 
         # Retrieve the user object
+        print("joel", username)
         user = User.objects.get(username=username)
 
         if not user:
@@ -79,19 +80,26 @@ def create_statistic(request):
                 
 
                 if game_type == "chess":
-                    print("chess")                   
-                    chessStatistic = Statistic.objects.create(
-                        username=user,
-                        ### these are placeholders for now
-                        gameType='chess',
-                        gamesPlayed=1 + serialized_statistics[0].get("gamesPlayed"),
-                        gamesWon=0,
-                        timePlayed=0.0,
-                        chatHistory=None,
-                        ###
-                        # etc
-                    )
-                    print("yay chess stat worked")
+                    print("chess")
+                    for s in statistics:
+                        if s.gameType == "chess":
+                            if result:
+                                gw = 1 + s.gamesWon
+                            else:
+                                gw = s.gamesWon
+                            
+                            chessStatistic = Statistic.objects.create(
+                                username=user,
+                                ### these are placeholders for now
+                                gameType='chess',
+                                gamesPlayed=1 + s.gamesPlayed,
+                                gamesWon=gw,
+                                timePlayed=time + s.timePlayed,
+                                chatHistory=None,
+                                ###
+                                # etc
+                            )
+                            s.delete()
                 elif game_type == "mastermind":
                     print("mastermind")
                     for s in statistics:

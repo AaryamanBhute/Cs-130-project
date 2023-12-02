@@ -112,7 +112,6 @@ const Mastermind = () => {
   const [errorMessage, setError] = useState('');
   const [startTime, setStartTime] = useState(null);
   const [timer, setTimer] = useState(0);
-
   const [intervalId, setIntervalId] = useState(null);
 
   useEffect(() => {
