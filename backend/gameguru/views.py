@@ -45,6 +45,10 @@ def signup(request):
 def create_statistic(request):
     if request.method == 'POST':
         username = request.data.get('username')
+        time = request.data.get('timePlayed')
+        result = request.data.get('result')
+
+        print("tyler1", time, result)
 
         game_type = request.query_params.get('gameType')
 
@@ -75,7 +79,7 @@ def create_statistic(request):
                 
 
                 if game_type == "chess":
-                    print("chess")                    
+                    print("chess")                   
                     chessStatistic = Statistic.objects.create(
                         username=user,
                         ### these are placeholders for now
@@ -92,13 +96,18 @@ def create_statistic(request):
                     print("mastermind")
                     for s in statistics:
                         if s.gameType == "mastermind":
+                            if result:
+                                gw = 1 + s.gamesPlayed
+                            else:
+                                gw = s.gamesPlayed
+                            
                             mastermindStatistic = Statistic.objects.create(
                                 username=user,
                                 ### these are placeholders for now
                                 gameType='mastermind',
                                 gamesPlayed=1 + s.gamesPlayed,
-                                gamesWon=0,
-                                timePlayed=0.0,
+                                gamesWon=gw,
+                                timePlayed=time,
                                 chatHistory=None,
                                 ###
                                 # etc

@@ -110,6 +110,10 @@ const Mastermind = () => {
 
   const [user, setUser] = useState();
   const [errorMessage, setError] = useState('');
+  const [startTime, setStartTime] = useState(null);
+  const [timer, setTimer] = useState(0);
+
+  const [intervalId, setIntervalId] = useState(null);
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem('username');
@@ -118,23 +122,42 @@ const Mastermind = () => {
     }
   }, []);
 
+  const startTimer = () => {
+    setStartTime(Date.now());
+    const intervalId = setInterval(() => {
+      setTimer(prevTimer => prevTimer + 1);
+    }, 1000);
+    return intervalId;
+  };
+
+  const stopTimer = (intervalId) => {
+    clearInterval(intervalId);
+  };
+
   const initSetup = () => {
-    postStatistic();
+    const id = startTimer();
+    setIntervalId(id);
     generateCode();
     setGameStarted(true);
   }
 
-  const postStatistic = async () => {
+  const postStatistic = async (intervalId) => {
     try {
       const game = "mastermind";
+      const timePlayed = Math.floor(timer);
       const response = await axios.post(`http://127.0.0.1:8000/create-statistic/?gameType=${game}`, {
         username: user,
+        timePlayed,
+        result: gameResult === "WIN"
       });
   
       console.log(response.data);
+      stopTimer(intervalId); // Stop the timer after sending the statistic
+
     } catch (error) {
       setError(error.toString());
       console.error('Error creating statistic for user:', error);
+      stopTimer(intervalId); // Stop the timer in case of an error
     }
   };
 
@@ -197,9 +220,11 @@ const Mastermind = () => {
 
     if (black === 4) {
       setGameResult("WIN");
+      postStatistic(intervalId)
     } else {
       if (activeRow === 7) {
         setGameResult("LOSS");
+        postStatistic(intervalId)
       }
       setActiveRow(activeRow + 1);
     }
