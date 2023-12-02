@@ -97,9 +97,9 @@ def create_statistic(request):
                     for s in statistics:
                         if s.gameType == "mastermind":
                             if result:
-                                gw = 1 + s.gamesPlayed
+                                gw = 1 + s.gamesWon
                             else:
-                                gw = s.gamesPlayed
+                                gw = s.gamesWon
                             
                             mastermindStatistic = Statistic.objects.create(
                                 username=user,
@@ -107,7 +107,7 @@ def create_statistic(request):
                                 gameType='mastermind',
                                 gamesPlayed=1 + s.gamesPlayed,
                                 gamesWon=gw,
-                                timePlayed=time,
+                                timePlayed=time + s.timePlayed,
                                 chatHistory=None,
                                 ###
                                 # etc
