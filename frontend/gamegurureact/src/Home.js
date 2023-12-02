@@ -11,7 +11,7 @@ const Home = () => {
   }, []);
 
   const handleLogout = () => {
-    // Perform logout actions - clear user state and local storage
+    // perform logout actions - clear user state and local storage
     setUser(null);
     localStorage.removeItem('username');
   };

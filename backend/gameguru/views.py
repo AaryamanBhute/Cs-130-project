@@ -45,49 +45,112 @@ def signup(request):
 def create_statistic(request):
     if request.method == 'POST':
         username = request.data.get('username')
-        # game_type = request.data.get('game_type')
+
+        game_type = request.query_params.get('gameType')
+
         # Retrieve the user object
         user = User.objects.get(username=username)
 
         if not user:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        user = get_object_or_404(User, username=username)
+
+        def switch(game_type):
+                
+                statistics = Statistic.objects.filter(username=user)
+                #statistics[0/1/2] = chess/mastermind/yahtzee
+                if not statistics.exists():
+                    return Response({'error': 'Statistics not found for this user'}, status=status.HTTP_404_NOT_FOUND)
+                serialized_statistics = []
+                for stat in statistics:
+                    serialized_stat = {
+                        'gameType': stat.gameType,
+                        'gamesPlayed': stat.gamesPlayed,
+                        'gamesWon': stat.gamesWon,
+                        'timePlayed': stat.timePlayed,
+                        'chatHistory': stat.chatHistory,
+                    }
+                    serialized_statistics.append(serialized_stat)
+                
+
+                if game_type == "chess":
+                    print("chess")                    
+                    chessStatistic = Statistic.objects.create(
+                        username=user,
+                        ### these are placeholders for now
+                        gameType='chess',
+                        gamesPlayed=1 + serialized_statistics[0].get("gamesPlayed"),
+                        gamesWon=0,
+                        timePlayed=0.0,
+                        chatHistory=None,
+                        ###
+                        # etc
+                    )
+                    print("yay chess stat worked")
+                elif game_type == "mastermind":
+                    print("mastermind")
+                    for s in statistics:
+                        if s.gameType == "mastermind":
+                            mastermindStatistic = Statistic.objects.create(
+                                username=user,
+                                ### these are placeholders for now
+                                gameType='mastermind',
+                                gamesPlayed=1 + s.gamesPlayed,
+                                gamesWon=0,
+                                timePlayed=0.0,
+                                chatHistory=None,
+                                ###
+                                # etc
+                            )
+                            s.delete()
+                elif game_type == "yahtzee":
+                    print("yahtzee")
+                else:
+                    return Response({'error': 'Invalid game query parameter'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+                
 
         # create Statistic associated with the user
-        chessStatistic = Statistic.objects.create(
-            username=user,
-            ### these are placeholders for now
-            gameType='chess',
-            gamesPlayed=0,
-            gamesWon=0,
-            timePlayed=0.0,
-            chatHistory=None,
-            ###
-            # etc
-        )
-        mastermindStatistic = Statistic.objects.create(
-            username=user,
-            ### these are placeholders for now
-            gameType='mastermind',
-            gamesPlayed=0,
-            gamesWon=0,
-            timePlayed=0.0,
-            chatHistory=None,
-            ###
-            # etc
-        )
-        yahtzeeStatistic = Statistic.objects.create(
-            username=user,
-            ### these are placeholders for now
-            gameType='yahtzee',
-            gamesPlayed=0,
-            gamesWon=0,
-            timePlayed=0.0,
-            chatHistory=None,
-            ###
-            # etc
-        )
-        print("SICK, stats created")
-        return Response({'message': 'Statistic created successfully'}, status=status.HTTP_201_CREATED)
+        if game_type:
+            switch(game_type)
+            return Response({'message': 'Statistic created successfully'}, status=status.HTTP_201_CREATED)
+
+        else:
+            chessStatistic = Statistic.objects.create(
+                username=user,
+                ### these are placeholders for now
+                gameType='chess',
+                gamesPlayed=0,
+                gamesWon=0,
+                timePlayed=0.0,
+                chatHistory=None,
+                ###
+                # etc
+            )
+            mastermindStatistic = Statistic.objects.create(
+                username=user,
+                ### these are placeholders for now
+                gameType='mastermind',
+                gamesPlayed=0,
+                gamesWon=0,
+                timePlayed=0.0,
+                chatHistory=None,
+                ###
+                # etc
+            )
+            yahtzeeStatistic = Statistic.objects.create(
+                username=user,
+                ### these are placeholders for now
+                gameType='yahtzee',
+                gamesPlayed=0,
+                gamesWon=0,
+                timePlayed=0.0,
+                chatHistory=None,
+                ###
+                # etc
+            )
+            print("SICK, stats created")
+            return Response({'message': 'Statistic created successfully'}, status=status.HTTP_201_CREATED)
     else:
         return Response({'error': 'Invalid method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
@@ -105,7 +168,7 @@ def get_user_statistics(request):
     if not username:
         return Response({'error': 'Username not provided in query parameters'}, status=status.HTTP_400_BAD_REQUEST)
 
-    user = get_object_or_404(username=username)
+    user = get_object_or_404(User, username=username)
     statistics = Statistic.objects.filter(username=user)
     if not statistics.exists():
         return Response({'error': 'Statistics not found for this user'}, status=status.HTTP_404_NOT_FOUND)

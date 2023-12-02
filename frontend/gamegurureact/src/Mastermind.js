@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const GameBoard = ({ colors, handleColorSelection, guesses, handleGuessColor, activeRow, feedback, checkGuess, code, gameResult }) => {
   return(
@@ -107,10 +108,35 @@ const Mastermind = () => {
   const [feedback, setFeedback] = useState(Array(32).fill('gray'));
   const [activeRow, setActiveRow] = useState(0);
 
+  const [user, setUser] = useState();
+  const [errorMessage, setError] = useState('');
+
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem('username');
+    if (loggedInUser) {
+      setUser(loggedInUser);
+    }
+  }, []);
+
   const initSetup = () => {
+    postStatistic();
     generateCode();
     setGameStarted(true);
   }
+
+  const postStatistic = async () => {
+    try {
+      const game = "mastermind";
+      const response = await axios.post(`http://127.0.0.1:8000/create-statistic/?gameType=${game}`, {
+        username: user,
+      });
+  
+      console.log(response.data);
+    } catch (error) {
+      setError(error.toString());
+      console.error('Error creating statistic for user:', error);
+    }
+  };
 
   const generateCode = () => {
     const selectedColors = [];
