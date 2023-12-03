@@ -156,7 +156,15 @@ const Yahtzee = () => {
     resetTurn();
 
     const totalScore = newScores.reduce((acc, curr) => acc + (curr || 0), 0);
-    setResult(totalScore);
+    let sum = 0;
+    for (let i = 0; i < 6; i++) {
+      sum += newScores[i];
+    }
+    if (sum >= 63) {
+      setResult(totalScore+35);
+    } else {
+      setResult(totalScore);
+    }
 
     if (!newScores.some((score) => score === null)) {
       setGameOver(true);
@@ -183,7 +191,7 @@ const Yahtzee = () => {
             {diceRollResults.map((result, index) => (
               <img
                 key={index}
-                src={require(`./DicePics/${result}.png`)}
+                src={require(`./assets/${result}.png`)}
                 alt={`Dice ${index + 1}`}
                 style={{
                   width: '50px',

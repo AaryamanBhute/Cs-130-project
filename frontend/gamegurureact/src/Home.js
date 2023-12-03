@@ -17,7 +17,7 @@ const Home = () => {
   };
 
   return (
-    <div style={{ backgroundColor: '#359e40', height: '100vh' }}>
+    <div style={{ backgroundColor: '#e2d0f3', height: '100vh' }}>
       <h1 style={{ textAlign: 'center', margin: 0, paddingTop: '50px' }}>Welcome to Game Guru!</h1>
       {user ? (
         <>
@@ -87,9 +87,45 @@ const Home = () => {
           </a>
         </div>
       )}
-      {user && (<p style={{ textAlign: 'center' }}>
-        <a href="/chess">Chess</a> | <a href="/yahtzee">Yahtzee</a> | <a href="/mastermind">Mastermind</a>
-      </p>)}
+      {user && (
+        <div>
+          <p style={{ textAlign: 'center' }}>
+            <a href="/chess">Chess</a> | <a href="/yahtzee">Yahtzee</a> | <a href="/mastermind">Mastermind</a>
+          </p>
+          <p style={{ textAlign: 'center' }}>
+            <img
+              src={require('./assets/wking.png')}
+              style={{
+                width: '50px',
+                height: '50px',
+                margin: '10px'
+              }}
+              alt="King"
+            />
+            <img
+              src={require('./assets/5.png')}
+              style={{
+                width: '50px',
+                height: '50px',
+                margin: '10px',
+                borderRadius: '25%',
+                clipPath: `inset(2px)`
+              }}
+              alt="Dice"
+            />
+            <div
+              style={{
+                display: 'inline-block',
+                width: '50px',
+                height: '50px',
+                backgroundColor: 'black',
+                borderRadius: '50%',
+                margin: '10px'
+              }}
+            />
+          </p>
+        </div>
+      )}
     </div>
   );
 };
