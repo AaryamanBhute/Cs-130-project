@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'
+import ChatBot from './ChatBot';
 
 const calculateScores = (results) => {
   const sortedResults = [...results].sort();
@@ -56,6 +58,60 @@ const Yahtzee = () => {
   const [scores, setScores] = useState(Array(13).fill(null));
   const [gameOver, setGameOver] = useState(false);
 
+  const [timer, setTimer] = useState(0);
+  const [intervalId, setIntervalId] = useState(null);
+  const [user, setUser] = useState();
+  const [errorMessage, setError] = useState('');
+  const [startTime, setStartTime] = useState(null);
+  const [result, setResult] = useState(false);
+
+
+  const startTimer = () => {
+    setStartTime(Date.now());
+    const id = setInterval(() => {
+      setTimer(prevTimer => prevTimer + 1);
+    }, 1000);
+    setIntervalId(id);
+  };
+
+  const stopTimer = () => {
+    clearInterval(intervalId);
+  };
+
+  useEffect(() => {
+    startTimer();
+    const loggedInUser = localStorage.getItem('username');
+    if (loggedInUser) {
+      setUser(loggedInUser);
+    }
+  }, []);
+  
+
+  useEffect(() => {
+    if (gameOver) {
+      postStatistic();
+    }
+  }, [gameOver]);
+  
+
+  const postStatistic = async () => {
+    try {
+      const game = 'yahtzee';
+      const timePlayed = Math.floor(timer);
+      const response = await axios.post(`http://127.0.0.1:8000/create-statistic/?gameType=${game}`, {
+        username: user,
+        timePlayed,
+        result: result,
+      });
+      console.log(response.data);
+      stopTimer(); // Stop the timer after sending the statistic
+    } catch (error) {
+      setError(error.toString());
+      console.error('Error creating statistic for user:', error);
+      stopTimer(); // Stop the timer in case of an error
+    }
+  };
+
   const rollDice = () => {
     if (rollsLeft > 0) {
       let results = [];
@@ -97,6 +153,9 @@ const Yahtzee = () => {
     newScores[number - 1] = calculateScores(diceRollResults)[number-1];
     setScores(newScores);
     resetTurn();
+
+    const totalScore = newScores.reduce((acc, curr) => acc + (curr || 0), 0);
+    setResult(totalScore >= 100);
 
     if (!newScores.some((score) => score === null)) {
       setGameOver(true);
@@ -145,6 +204,7 @@ const Yahtzee = () => {
         gameOver={gameOver}
         resetGame={resetGame}
       />
+      <ChatBot page="Yahtzee"/>
     </div>
   );
 };
