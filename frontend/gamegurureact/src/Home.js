@@ -87,9 +87,9 @@ const Home = () => {
           </a>
         </div>
       )}
-      <p style={{ textAlign: 'center' }}>
+      {user && (<p style={{ textAlign: 'center' }}>
         <a href="/chess">Chess</a> | <a href="/yahtzee">Yahtzee</a> | <a href="/mastermind">Mastermind</a>
-      </p>
+      </p>)}
     </div>
   );
 };
