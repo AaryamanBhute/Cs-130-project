@@ -141,14 +141,17 @@ const Mastermind = () => {
     setGameStarted(true);
   }
 
-  const postStatistic = async (intervalId) => {
+  const postStatistic = async (intervalId, winOrLoss) => {
     try {
       const game = "mastermind";
       const timePlayed = Math.floor(timer);
+      console.log(gameResult);
+      console.log(winOrLoss);
+      console.log("bruv");
       const response = await axios.post(`http://127.0.0.1:8000/create-statistic/?gameType=${game}`, {
         username: user,
         timePlayed,
-        result: gameResult === "WIN"
+        result: winOrLoss,
       });
   
       console.log(response.data);
@@ -220,11 +223,11 @@ const Mastermind = () => {
 
     if (black === 4) {
       setGameResult("WIN");
-      postStatistic(intervalId)
+      postStatistic(intervalId, true);
     } else {
       if (activeRow === 7) {
         setGameResult("LOSS");
-        postStatistic(intervalId)
+        postStatistic(intervalId, false);
       }
       setActiveRow(activeRow + 1);
     }
