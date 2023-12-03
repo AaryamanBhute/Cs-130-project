@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'
+
+import axios from 'axios';
 import ChatBot from './ChatBot';
 
 const calculateScores = (results) => {
@@ -164,7 +165,7 @@ const Yahtzee = () => {
 
   return (
     <div style={{ backgroundColor: '#FADADD', minHeight: '100vh' }}>
-      <h1 style={{ textAlign: 'center', margin: 0 }}>Yahtzee</h1>
+      <h1 style={{ textAlign: 'center', margin: 0, paddingTop: '50px' }}>Yahtzee</h1>
       <p style={{ textAlign: 'center' }}>
         <a href="/" style={{ color: 'black' }}>
           Back to Home
@@ -180,18 +181,23 @@ const Yahtzee = () => {
           <p>You rolled:</p>
           <div>
             {diceRollResults.map((result, index) => (
-              <button
+              <img
                 key={index}
+                src={require(`./DicePics/${result}.png`)}
+                alt={`Dice ${index + 1}`}
                 style={{
+                  width: '50px',
+                  height: '50px',
                   margin: '10px',
-                  background: selectedDice.includes(index + 1) ? 'lightblue' : 'transparent',
-                  cursor: 'pointer'
+                  cursor: rollsLeft > 0 ? 'pointer' : 'default',
+                  opacity: rollsLeft > 0 ?
+                    !selectedDice.includes(index + 1)? '1' : '0.75'
+                  : 0.5,
+                  borderRadius: '25%',
+                  clipPath: `inset(2px)`,
                 }}
-                onClick={() => handleSelection(index + 1)}
-                disabled={rollsLeft === 0}
-              >
-                {`Dice ${index + 1}: ${result}`}
-              </button>
+                onClick={() => rollsLeft > 0 && handleSelection(index + 1)}
+              />
             ))}
           </div>
         </div>
@@ -211,7 +217,7 @@ const Yahtzee = () => {
 
 const ScoreSection = ({ diceRollResults, handleScoreSelect, scores, rollsLeft, gameOver, resetGame }) => {
   const canSelect = rollsLeft < 3;
-  const allScores = calculateScores(diceRollResults);
+  const tempScores = calculateScores(diceRollResults);
   const upperScore = scores.slice(0, 6).reduce((acc, curr) => acc + (curr || 0), 0);
   const upperBonus = upperScore >= 63 ? 35 : 0;
   const totalScore = scores.reduce((acc, curr) => acc + (curr || 0), 0) + upperBonus;
@@ -233,18 +239,27 @@ const ScoreSection = ({ diceRollResults, handleScoreSelect, scores, rollsLeft, g
   ];
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+    <div style={{ textAlign: 'center', marginTop: '10px' }}>
       <p>Scores:</p>
       {categories.map((category, index) => (
+        <React.Fragment key={category}>
         <button
           key={category}
           onClick={() => handleScoreSelect(index + 1)}
           disabled={!canSelect || scores[index] !== null}
-          style={{cursor: (!canSelect || scores[index] !== null) ? 'default' : 'pointer'}}
+          style={{
+            cursor: (!canSelect || scores[index] !== null) ? 'default' : 'pointer',
+            backgroundColor: scores[index] !== null ? 'lightgray' : '',
+            opacity: scores[index] !== null ? 0.7 : 1
+          }}
         >
-          {`${category} = ${scores[index] !== null ? scores[index] : allScores[index]}`}
+          {`${category} = ${scores[index] !== null ? scores[index] : tempScores[index]}`}
         </button>
+        {index === 5 && <div style={{ height: '10px' }} />}
+        </React.Fragment>
       ))}
+      <p>Upper Score: {upperBonus === 35 ? `${upperScore} (+35)` : upperScore}</p>
+      <p>Lower Score: {totalScore-upperScore-upperBonus}</p>
       <p>Total Score: {totalScore}</p>
       {gameOver && (
         <div>
