@@ -31,7 +31,7 @@ const Dashboard = () => {
 
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', backgroundColor: '#f4f4f4' }}>
-      <h1 style={{ textAlign: 'center', fontSize: '28px', marginBottom: '20px' }}>Search for User</h1>
+      <h1 style={{ textAlign: 'center', fontSize: '28px', marginBottom: '20px' }}>Search for User Stats</h1>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <input
           type="text"
