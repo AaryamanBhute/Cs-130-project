@@ -17,11 +17,11 @@ const Home = () => {
   };
 
   return (
-    <div style={{ backgroundColor: 'forestgreen', height: '100vh' }}>
-      <h1 style={{ textAlign: 'center', margin: 0 }}>Welcome to Game Guru!</h1>
+    <div style={{ backgroundColor: '#359e40', height: '100vh' }}>
+      <h1 style={{ textAlign: 'center', margin: 0, paddingTop: '50px' }}>Welcome to Game Guru!</h1>
       {user ? (
         <>
-          <p style={{ textAlign: 'center' }}>Hello, {user}!</p>
+          <p style={{ textAlign: 'center' }}>Hello, {user}! Pick a game:</p>
           <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
             <button
               onClick={handleLogout}

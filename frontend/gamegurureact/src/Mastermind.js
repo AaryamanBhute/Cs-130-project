@@ -4,7 +4,7 @@ import axios from 'axios';
 const GameBoard = ({ colors, handleColorSelection, guesses, handleGuessColor, activeRow, feedback, checkGuess, code, gameResult }) => {
   return(
     <>
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
         Your Options:
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
@@ -24,7 +24,7 @@ const GameBoard = ({ colors, handleColorSelection, guesses, handleGuessColor, ac
         ))}
         </div>
         {Array.from({ length: 8 }, (_, i) => i).map((row) => (
-        <div key={row} style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        <div key={row} style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
           {guesses.slice(row * 4, row * 4 + 4).map((color, index) => (
           <div
             key={index}
@@ -230,14 +230,14 @@ const Mastermind = () => {
   };
 
   return (
-    <div style={{ backgroundColor: '#083F66', minHeight: '100vh' }}>
-      <h1 style={{ textAlign: 'center', margin: 0 }}>Mastermind</h1>
+    <div style={{ backgroundColor: '#0b5c95', minHeight: '100vh' }}>
+      <h1 style={{ textAlign: 'center', margin: 0, paddingTop: '50px' }}>Mastermind</h1>
       <p style={{ textAlign: 'center' }}>
         <a href="/" style={{ color: 'black' }}>
           Back to Home
         </a>
       </p>
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
         {!gameStarted && (
           <button onClick={initSetup} style={{ padding: '10px 20px', fontSize: '16px' }}>
             Start Game
