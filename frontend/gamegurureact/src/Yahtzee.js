@@ -63,7 +63,7 @@ const Yahtzee = () => {
   const [user, setUser] = useState();
   const [errorMessage, setError] = useState('');
   const [startTime, setStartTime] = useState(null);
-  const [result, setResult] = useState(false);
+  const [result, setResult] = useState(0);
 
 
   const startTimer = () => {
@@ -155,7 +155,7 @@ const Yahtzee = () => {
     resetTurn();
 
     const totalScore = newScores.reduce((acc, curr) => acc + (curr || 0), 0);
-    setResult(totalScore >= 100);
+    setResult(totalScore);
 
     if (!newScores.some((score) => score === null)) {
       setGameOver(true);

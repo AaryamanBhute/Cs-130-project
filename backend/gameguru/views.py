@@ -125,12 +125,13 @@ def create_statistic(request):
                     print("yahtzee")
                     for s in statistics:
                         if s.gameType == "yahtzee":
-                            if result:
-                                gw = 1 + s.gamesWon
+                            #result == score, gamesWon == highScore for yahtzee
+                            if result > s.gamesWon:
+                                gw = result
                             else:
                                 gw = s.gamesWon
                             
-                            mastermindStatistic = Statistic.objects.create(
+                            yahtzeeStatistic = Statistic.objects.create(
                                 username=user,
                                 ### these are placeholders for now
                                 gameType='yahtzee',
