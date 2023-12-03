@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ChatBot from './ChatBot';
 import axios from 'axios';
 
 const GameBoard = ({ colors, handleColorSelection, guesses, handleGuessColor, activeRow, feedback, checkGuess, code, gameResult }) => {
@@ -264,6 +265,7 @@ const Mastermind = () => {
           </button>
         </div>
       )}
+      <ChatBot page="Mastermind"/>
     </div>
   );
 };

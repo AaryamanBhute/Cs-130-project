@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Console": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "QDRANT_KEY": "hviA9qOE0RBRhZ-NlAYkLr83RsEmzKotsmZ1-QnHNviYscQ6AzgftQ",
+        "OPENAI_KEY": "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"
+      }
+    }
+  }
+}

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useChessGameState, gameLength } from './ChessGameState';
 import { getValidMoves } from './PieceMovement';
 import axios from 'axios'
+import ChatBot from '../ChatBot';
 
 const Chessboard = () => {
   const { gameState, updateGameState, resetGame, message, seconds } = useChessGameState();
@@ -200,6 +201,7 @@ const Chessboard = () => {
         <a href="/" style={{ textDecoration: 'none', color: 'black' }}>Back to Home</a>
       </button>
     </div>
+    <ChatBot page="Chess"/>
   </div>
   );
 };

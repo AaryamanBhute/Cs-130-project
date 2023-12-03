@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+
 import axios from 'axios';
+import ChatBot from './ChatBot';
 
 const calculateScores = (results) => {
   const sortedResults = [...results].sort();
@@ -62,7 +64,7 @@ const Yahtzee = () => {
   const [user, setUser] = useState();
   const [errorMessage, setError] = useState('');
   const [startTime, setStartTime] = useState(null);
-  const [result, setResult] = useState(false);
+  const [result, setResult] = useState(0);
 
 
   const startTimer = () => {
@@ -154,7 +156,7 @@ const Yahtzee = () => {
     resetTurn();
 
     const totalScore = newScores.reduce((acc, curr) => acc + (curr || 0), 0);
-    setResult(totalScore >= 100);
+    setResult(totalScore);
 
     if (!newScores.some((score) => score === null)) {
       setGameOver(true);
@@ -208,6 +210,7 @@ const Yahtzee = () => {
         gameOver={gameOver}
         resetGame={resetGame}
       />
+      <ChatBot page="Yahtzee"/>
     </div>
   );
 };
