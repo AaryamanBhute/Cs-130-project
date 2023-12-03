@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'
+import axios from 'axios';
 
 const calculateScores = (results) => {
   const sortedResults = [...results].sort();
@@ -179,18 +179,23 @@ const Yahtzee = () => {
           <p>You rolled:</p>
           <div>
             {diceRollResults.map((result, index) => (
-              <button
+              <img
                 key={index}
+                src={require(`./DicePics/${result}.png`)}
+                alt={`Dice ${index + 1}`}
                 style={{
+                  width: '50px',
+                  height: '50px',
                   margin: '10px',
-                  background: selectedDice.includes(index + 1) ? 'lightblue' : 'transparent',
-                  cursor: 'pointer'
+                  cursor: rollsLeft > 0 ? 'pointer' : 'default',
+                  opacity: rollsLeft > 0 ?
+                    !selectedDice.includes(index + 1)? '1' : '0.75'
+                  : 0.5,
+                  borderRadius: '25%',
+                  clipPath: `inset(2px)`,
                 }}
-                onClick={() => handleSelection(index + 1)}
-                disabled={rollsLeft === 0}
-              >
-                {`Dice ${index + 1}: ${result}`}
-              </button>
+                onClick={() => rollsLeft > 0 && handleSelection(index + 1)}
+              />
             ))}
           </div>
         </div>
