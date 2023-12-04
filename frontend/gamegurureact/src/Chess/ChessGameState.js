@@ -1,13 +1,9 @@
-// GameState.js
+// ChessGameState.js
 import { useState, useEffect } from 'react';
 import { getValidMoves, makeMove, kingUnderAttack } from './PieceMovement';
+import { makeAIMove } from './ChessAI';
 
-export const gameLength = 60 * 5; // 5 minutes
-
-const createInitialBoard = () => {
-  // Randomize whether white or black is on the bottom
-  const isWhiteOnBottom = Math.random() < 0.5;
-
+const createInitialBoard = (isWhiteOnBottom) => {
   const piecesOrder = isWhiteOnBottom ?
                       ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'] :
                       ['rook', 'knight', 'bishop', 'king', 'queen', 'bishop', 'knight', 'rook'];
@@ -22,9 +18,8 @@ const createInitialBoard = () => {
 
   const orientedRows = isWhiteOnBottom ? piecesRows : piecesRows.slice().reverse();
 
-  return {
+  let initialGameState = {
     board: orientedRows,
-    gameOver: false,
     blackCapturedPieces: [],
     whiteCapturedPieces: [],
     currentPlayer: 'w',
@@ -37,25 +32,85 @@ const createInitialBoard = () => {
       blackLongCastle: true,
     }
   };
+
+  return initialGameState
 };
 
 export const useChessGameState = () => {
-  const initialGameState = createInitialBoard();
-
-  const [gameState, setGameState] = useState(initialGameState);
+  const [gameType, setGameType] = useState(0);
+  const [timeLimit, setTimeLimit] = useState(0);
+  const [playerColor, setPlayerColor] = useState(1);
   const [message, setMessage] = useState("");
   const [seconds, setSeconds] = useState({ white: 0, black: 0 });
 
-  const resetGame = () => {
+  const initialGameState = createInitialBoard(playerColor);
+  const [gameState, setGameState] = useState(initialGameState);
+  const [gameOver, setGameOver] = useState(false);
+
+  const mapGameTypeToDifficulty = (gameType) => {
+    const difficultyMap = {
+      'Free Play': 0,
+      'Easy': 1,
+      'Medium': 2,
+      'Hard': 3
+    };
+    return difficultyMap[gameType];
+  };
+  
+  const mapTimeLimitToSeconds = (timeLimit) => {
+    const timeMap = {
+      'No Time Limit': 0,
+      '10 Minutes': 600,
+      '5 Minutes': 300,
+      '1 Minute': 60
+    };
+    return timeMap[timeLimit];
+  };
+  
+  const mapColorToNumber = (color) => {
+    const colorMap = {
+      'Black': 0,
+      'White': 1,
+      'Random': Math.round(Math.random())
+    };
+    return colorMap[color];
+  };
+
+  const resetGame = (type, time, color) => {
+    setGameOver(false);
+    setMessage("");
     setSeconds({ white: 0, black: 0 });
-    setGameState(createInitialBoard());
+    const difficulty = mapGameTypeToDifficulty(type);
+    const timeInSeconds = mapTimeLimitToSeconds(time);
+    const colorNumber = mapColorToNumber(color);
+    setGameType(difficulty);
+    setTimeLimit(timeInSeconds);
+    setPlayerColor(colorNumber);
+    const initialGameState = createInitialBoard(colorNumber);
+    if (difficulty && !colorNumber) {
+      setGameState(makeAIMove(initialGameState, difficulty));
+    } else {
+      setGameState(initialGameState);
+    }
   };
 
-  const updateGameState = (gameState, move) => {
-    setGameState(makeMove(gameState, move));
+  const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  
+  const updateGameState = async (gameState, move) => {
+    const playerGameState = makeMove(gameState, move);
+    checkGameState(playerGameState);
+    setGameState(playerGameState);
+    if (gameType && !gameOver) {
+      await sleep(500);
+      const AIGameState = makeAIMove(playerGameState, gameType);
+      checkGameState(AIGameState);
+      setGameState(AIGameState);
+    }
   };
 
-  useEffect(() => {
+  const checkGameState = (gameState) => {
     // Check if there's any move that would not result in a check
     if (kingUnderAttack(gameState, gameState.currentPlayer)) {
       const validMoves = getValidMoves(gameState, gameState.currentPlayer);
@@ -66,28 +121,32 @@ export const useChessGameState = () => {
         }
       }
       setMessage(`${gameState.currentPlayer === 'b' ? 'White' : 'Black'} wins by checkmate!`);
-      setGameState({ ...gameState, gameOver: true });
+      setGameOver(true);
     } else {
       setMessage("");
     }
-  }, [gameState]); // Run this effect whenever gameState changes  
+  };
 
   useEffect(() => {
-    if (seconds.white >= gameLength) {
-      setMessage('Black wins by timeout!');
-      setGameState({ ...gameState, gameOver: true });
-    } else if (seconds.black >= gameLength) {
-      setMessage('White wins by timeout!');
-      setGameState({ ...gameState, gameOver: true });
+    if (timeLimit && !gameOver) {
+      if (seconds.white >= timeLimit) {
+        setMessage('Black wins by timeout!');
+        setGameOver(true);
+      } else if (seconds.black >= timeLimit) {
+        setMessage('White wins by timeout!');
+        setGameOver(true);
+      }
+      const interval = setInterval(() => {
+        if (!gameOver) {
+          setSeconds(seconds => ({
+            white: gameState.currentPlayer === 'w' ? seconds.white + 1 : seconds.white,
+            black: gameState.currentPlayer === 'b' ? seconds.black + 1 : seconds.black
+          }));
+        }
+      }, 1000);
+      return () => clearInterval(interval);
     }
-    const interval = setInterval(() => {
-        setSeconds(seconds => ({
-          white: gameState.currentPlayer === 'w' ? seconds.white + 1 : seconds.white,
-          black: gameState.currentPlayer === 'b' ? seconds.black + 1 : seconds.black
-        }));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [seconds, message, gameState]);
+  }, [seconds, message, gameState, timeLimit, gameOver]);
 
   return {
     gameState,
@@ -95,5 +154,7 @@ export const useChessGameState = () => {
     resetGame,
     message,
     seconds,
+    timeLimit,
+    gameOver,
   };
 };

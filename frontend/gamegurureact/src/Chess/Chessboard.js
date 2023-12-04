@@ -1,18 +1,22 @@
 // Chessboard.js
 import { useState, useEffect } from 'react';
-import { useChessGameState, gameLength } from './ChessGameState';
+import { useChessGameState } from './ChessGameState';
 import { getValidMoves } from './PieceMovement';
 import axios from 'axios'
 import ChatBot from '../ChatBot';
+import Modal from 'react-modal';
 
 const Chessboard = () => {
-  const { gameState, updateGameState, resetGame, message, seconds } = useChessGameState();
+  const { gameState, updateGameState, resetGame, message, seconds, timeLimit, gameOver } = useChessGameState();
   const [selectedSquare, setSelectedSquare] = useState(null);
   const [validMoves, setValidMoves] = useState([]);
 
   const squareSize = 80;
 
   const handleSquareClick = (row, col) => {
+    if (gameOver) {
+      return;
+    }
     if (selectedSquare) {
       // If selected square is clicked again, deselect it
       if (selectedSquare.row === row && selectedSquare.col === col) {
@@ -99,10 +103,10 @@ const Chessboard = () => {
   }
 
   const Timer = ({ player }) => {
-    const whiteSeconds = (gameLength - seconds.white) % 60;
-    const whiteTime = `${Math.floor((gameLength - seconds.white) / 60)}:${whiteSeconds < 10 ? '0' + whiteSeconds : whiteSeconds}`;
-    const blackSeconds = (gameLength - seconds.black) % 60;
-    const blackTime = `${Math.floor((gameLength - seconds.black) / 60)}:${blackSeconds < 10 ? '0' + blackSeconds : blackSeconds}`;
+    const whiteSeconds = (timeLimit - seconds.white) % 60;
+    const whiteTime = timeLimit ? `${Math.floor((timeLimit - seconds.white) / 60)}:${whiteSeconds < 10 ? '0' + whiteSeconds : whiteSeconds}` : 'N/A';
+    const blackSeconds = (timeLimit - seconds.black) % 60;
+    const blackTime = timeLimit ? `${Math.floor((timeLimit - seconds.black) / 60)}:${blackSeconds < 10 ? '0' + blackSeconds : blackSeconds}` : 'N/A';
     return (
       <div style={{ backgroundColor: '#eeeeee', padding: '0px 10px 0px 10px', border: '2px solid black' }}>
         <h2>{player}'s Time Remaining:</h2>
@@ -111,11 +115,25 @@ const Chessboard = () => {
     );
   };
 
-  const handleResetClick = () => {
+  const [modalIsOpen, setModalIsOpen] = useState(true);
+
+  const handleNewGameClick = () => {
+    setModalIsOpen(true);
+  };
+  
+  const handleGameTypeSelect = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const type = form.elements.gameType.value;
+    const time = form.elements.timeLimit.value;
+    const color = form.elements.playerColor.value;
+  
+    setModalIsOpen(false);
     stopTimer(intervalId);
     setSelectedSquare(null);
     setValidMoves([]);
-    resetGame();
+    // Reset the game with the selected game type
+    resetGame(type, time, color);
   };
 
   const [user, setUser] = useState();
@@ -142,14 +160,13 @@ const Chessboard = () => {
       if (loggedInUser) {
         setUser(loggedInUser);
       }
-    if (gameState.gameOver) {
-      
+    if (gameOver) {
       postStatistic()
       setValidMoves([]);
       setSelectedSquare(null);
       return;
     }
-  }, [gameState.gameOver]);
+  }, [gameOver]);
 
   const postStatistic = async (intervalId) => {
     try {
@@ -166,19 +183,49 @@ const Chessboard = () => {
 
     } catch (error) {
       setError(error.toString());
-      console.error('Error creating statistic for user:', error);
+      console.error('Error creating statistic for user:', errorMessage);
       stopTimer(intervalId); // Stop the timer in case of an error
     }
   };
 
-  return (    
+  return (   
   <div style={{ backgroundColor: '#6495ED', height: '100vh' }}>
+    <Modal isOpen={modalIsOpen}>
+      <h2 style={{ fontSize: '2em', textAlign: 'center' }}>Chess Game Selection:</h2>
+      <form onSubmit={handleGameTypeSelect} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ fontSize: '1.5em', marginBottom: '1em' }}>
+          <h3>Game Type</h3>
+          <select name="gameType" style={{ fontSize: '1.2em' }}>
+            {['Free Play', 'Easy', 'Medium', 'Hard'].map(type =>
+              <option value={type}>{type}</option>
+            )}
+          </select>
+        </div>
+        <div style={{ fontSize: '1.5em', marginBottom: '1em' }}>
+          <h3>Time Limit</h3>
+          <select name="timeLimit" style={{ fontSize: '1.2em' }}>
+            {['No Time Limit', '10 Minutes', '5 Minutes', '1 Minute'].map(time =>
+              <option value={time}>{time}</option>
+            )}
+          </select>
+        </div>
+        <div style={{ fontSize: '1.5em', marginBottom: '3em' }}>
+          <h3>Player Color</h3>
+          <select name="playerColor" style={{ fontSize: '1.2em' }}>
+            {['White', 'Black', 'Random'].map(color =>
+              <option value={color}>{color}</option>
+            )}
+          </select>
+        </div>
+        <button type="submit" style={{ fontSize: '2.5em' }}>Start Game</button>
+      </form>
+    </Modal>
     <h1 style={{ marginTop: '0px', paddingTop: '40px', font: 'bold 50px Arial', textAlign: 'center', color: '#eeeeee' }}>Chess</h1>
     <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', margin: '20px' }}>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: `${squareSize*2}px` }}>
-        <CapturedPieces player={!gameState.whiteOnBottom ? 'White' : 'Black'} pieces={gameState.whiteCapturedPieces} />
+        <CapturedPieces player={!gameState.whiteOnBottom ? 'White' : 'Black'} pieces={gameState.blackCapturedPieces} />
         <h1 style={{ font: 'bold 25px Arial', textAlign: 'center', color: '#eeeeee' }}>{message}</h1>
-        <CapturedPieces player={gameState.whiteOnBottom ? 'White' : 'Black'} pieces={gameState.blackCapturedPieces} />
+        <CapturedPieces player={gameState.whiteOnBottom ? 'White' : 'Black'} pieces={gameState.whiteCapturedPieces} />
       </div>
       <div className="chessboard-container" style={{ border: '10px solid black', margin: '20px' }}>
         {/* Render each row */}
@@ -196,7 +243,7 @@ const Chessboard = () => {
     </div>
     <div style={{ display: 'flex', justifyContent: 'center', gap: '50px', margin: '20px' }}>
       <button style={{ border: '1px solid black', height: '50px', font: 'bold 30px Arial' }} 
-              onClick={handleResetClick}>Restart Game</button>
+              onClick={handleNewGameClick}>New Game</button>
       <button style={{ border: '1px solid black', height: '50px', font: 'bold 30px Arial' }}>
         <a href="/" style={{ textDecoration: 'none', color: 'black' }}>Back to Home</a>
       </button>
