@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import ChatBot from './ChatBot';
+import axios from 'axios';
 
 const GameBoard = ({ colors, handleColorSelection, guesses, handleGuessColor, activeRow, feedback, checkGuess, code, gameResult }) => {
   return(
     <>
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
         Your Options:
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
@@ -23,7 +25,7 @@ const GameBoard = ({ colors, handleColorSelection, guesses, handleGuessColor, ac
         ))}
         </div>
         {Array.from({ length: 8 }, (_, i) => i).map((row) => (
-        <div key={row} style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        <div key={row} style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
           {guesses.slice(row * 4, row * 4 + 4).map((color, index) => (
           <div
             key={index}
@@ -107,10 +109,57 @@ const Mastermind = () => {
   const [feedback, setFeedback] = useState(Array(32).fill('gray'));
   const [activeRow, setActiveRow] = useState(0);
 
+  const [user, setUser] = useState();
+  const [errorMessage, setError] = useState('');
+  const [startTime, setStartTime] = useState(null);
+  const [timer, setTimer] = useState(0);
+  const [intervalId, setIntervalId] = useState(null);
+
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem('username');
+    if (loggedInUser) {
+      setUser(loggedInUser);
+    }
+  }, []);
+
+  const startTimer = () => {
+    setStartTime(Date.now());
+    const intervalId = setInterval(() => {
+      setTimer(prevTimer => prevTimer + 1);
+    }, 1000);
+    return intervalId;
+  };
+
+  const stopTimer = (intervalId) => {
+    clearInterval(intervalId);
+  };
+
   const initSetup = () => {
+    const id = startTimer();
+    setIntervalId(id);
     generateCode();
     setGameStarted(true);
   }
+
+  const postStatistic = async (intervalId) => {
+    try {
+      const game = "mastermind";
+      const timePlayed = Math.floor(timer);
+      const response = await axios.post(`http://127.0.0.1:8000/create-statistic/?gameType=${game}`, {
+        username: user,
+        timePlayed,
+        result: gameResult === "WIN"
+      });
+  
+      console.log(response.data);
+      stopTimer(intervalId); // Stop the timer after sending the statistic
+
+    } catch (error) {
+      setError(error.toString());
+      console.error('Error creating statistic for user:', error);
+      stopTimer(intervalId); // Stop the timer in case of an error
+    }
+  };
 
   const generateCode = () => {
     const selectedColors = [];
@@ -171,23 +220,25 @@ const Mastermind = () => {
 
     if (black === 4) {
       setGameResult("WIN");
+      postStatistic(intervalId)
     } else {
       if (activeRow === 7) {
         setGameResult("LOSS");
+        postStatistic(intervalId)
       }
       setActiveRow(activeRow + 1);
     }
   };
 
   return (
-    <div style={{ backgroundColor: '#083F66', minHeight: '100vh' }}>
-      <h1 style={{ textAlign: 'center', margin: 0 }}>Mastermind</h1>
+    <div style={{ backgroundColor: '#0b5c95', minHeight: '100vh' }}>
+      <h1 style={{ textAlign: 'center', margin: 0, paddingTop: '50px' }}>Mastermind</h1>
       <p style={{ textAlign: 'center' }}>
         <a href="/" style={{ color: 'black' }}>
           Back to Home
         </a>
       </p>
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
         {!gameStarted && (
           <button onClick={initSetup} style={{ padding: '10px 20px', fontSize: '16px' }}>
             Start Game
@@ -214,6 +265,7 @@ const Mastermind = () => {
           </button>
         </div>
       )}
+      <ChatBot page="Mastermind"/>
     </div>
   );
 };

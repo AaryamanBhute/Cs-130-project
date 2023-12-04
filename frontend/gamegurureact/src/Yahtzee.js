@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import axios from 'axios';
+import ChatBot from './ChatBot';
 
 const calculateScores = (results) => {
   const sortedResults = [...results].sort();
@@ -56,6 +59,60 @@ const Yahtzee = () => {
   const [scores, setScores] = useState(Array(13).fill(null));
   const [gameOver, setGameOver] = useState(false);
 
+  const [timer, setTimer] = useState(0);
+  const [intervalId, setIntervalId] = useState(null);
+  const [user, setUser] = useState();
+  const [errorMessage, setError] = useState('');
+  const [startTime, setStartTime] = useState(null);
+  const [result, setResult] = useState(0);
+
+
+  const startTimer = () => {
+    setStartTime(Date.now());
+    const id = setInterval(() => {
+      setTimer(prevTimer => prevTimer + 1);
+    }, 1000);
+    setIntervalId(id);
+  };
+
+  const stopTimer = () => {
+    clearInterval(intervalId);
+  };
+
+  useEffect(() => {
+    startTimer();
+    const loggedInUser = localStorage.getItem('username');
+    if (loggedInUser) {
+      setUser(loggedInUser);
+    }
+  }, []);
+  
+
+  useEffect(() => {
+    if (gameOver) {
+      postStatistic();
+    }
+  }, [gameOver]);
+  
+
+  const postStatistic = async () => {
+    try {
+      const game = 'yahtzee';
+      const timePlayed = Math.floor(timer);
+      const response = await axios.post(`http://127.0.0.1:8000/create-statistic/?gameType=${game}`, {
+        username: user,
+        timePlayed,
+        result: result,
+      });
+      console.log(response.data);
+      stopTimer(); // Stop the timer after sending the statistic
+    } catch (error) {
+      setError(error.toString());
+      console.error('Error creating statistic for user:', error);
+      stopTimer(); // Stop the timer in case of an error
+    }
+  };
+
   const rollDice = () => {
     if (rollsLeft > 0) {
       let results = [];
@@ -98,6 +155,17 @@ const Yahtzee = () => {
     setScores(newScores);
     resetTurn();
 
+    const totalScore = newScores.reduce((acc, curr) => acc + (curr || 0), 0);
+    let sum = 0;
+    for (let i = 0; i < 6; i++) {
+      sum += newScores[i];
+    }
+    if (sum >= 63) {
+      setResult(totalScore+35);
+    } else {
+      setResult(totalScore);
+    }
+
     if (!newScores.some((score) => score === null)) {
       setGameOver(true);
     }
@@ -105,7 +173,7 @@ const Yahtzee = () => {
 
   return (
     <div style={{ backgroundColor: '#FADADD', minHeight: '100vh' }}>
-      <h1 style={{ textAlign: 'center', margin: 0 }}>Yahtzee</h1>
+      <h1 style={{ textAlign: 'center', margin: 0, paddingTop: '50px' }}>Yahtzee</h1>
       <p style={{ textAlign: 'center' }}>
         <a href="/" style={{ color: 'black' }}>
           Back to Home
@@ -121,18 +189,23 @@ const Yahtzee = () => {
           <p>You rolled:</p>
           <div>
             {diceRollResults.map((result, index) => (
-              <button
+              <img
                 key={index}
+                src={require(`./assets/${result}.png`)}
+                alt={`Dice ${index + 1}`}
                 style={{
+                  width: '50px',
+                  height: '50px',
                   margin: '10px',
-                  background: selectedDice.includes(index + 1) ? 'lightblue' : 'transparent',
-                  cursor: 'pointer'
+                  cursor: rollsLeft > 0 ? 'pointer' : 'default',
+                  opacity: rollsLeft > 0 ?
+                    !selectedDice.includes(index + 1)? '1' : '0.75'
+                  : 0.5,
+                  borderRadius: '25%',
+                  clipPath: `inset(2px)`,
                 }}
-                onClick={() => handleSelection(index + 1)}
-                disabled={rollsLeft === 0}
-              >
-                {`Dice ${index + 1}: ${result}`}
-              </button>
+                onClick={() => rollsLeft > 0 && handleSelection(index + 1)}
+              />
             ))}
           </div>
         </div>
@@ -145,13 +218,14 @@ const Yahtzee = () => {
         gameOver={gameOver}
         resetGame={resetGame}
       />
+      <ChatBot page="Yahtzee"/>
     </div>
   );
 };
 
 const ScoreSection = ({ diceRollResults, handleScoreSelect, scores, rollsLeft, gameOver, resetGame }) => {
   const canSelect = rollsLeft < 3;
-  const allScores = calculateScores(diceRollResults);
+  const tempScores = calculateScores(diceRollResults);
   const upperScore = scores.slice(0, 6).reduce((acc, curr) => acc + (curr || 0), 0);
   const upperBonus = upperScore >= 63 ? 35 : 0;
   const totalScore = scores.reduce((acc, curr) => acc + (curr || 0), 0) + upperBonus;
@@ -173,18 +247,27 @@ const ScoreSection = ({ diceRollResults, handleScoreSelect, scores, rollsLeft, g
   ];
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+    <div style={{ textAlign: 'center', marginTop: '10px' }}>
       <p>Scores:</p>
       {categories.map((category, index) => (
+        <React.Fragment key={category}>
         <button
           key={category}
           onClick={() => handleScoreSelect(index + 1)}
           disabled={!canSelect || scores[index] !== null}
-          style={{cursor: (!canSelect || scores[index] !== null) ? 'default' : 'pointer'}}
+          style={{
+            cursor: (!canSelect || scores[index] !== null) ? 'default' : 'pointer',
+            backgroundColor: scores[index] !== null ? 'lightgray' : '',
+            opacity: scores[index] !== null ? 0.7 : 1
+          }}
         >
-          {`${category} = ${scores[index] !== null ? scores[index] : allScores[index]}`}
+          {`${category} = ${scores[index] !== null ? scores[index] : tempScores[index]}`}
         </button>
+        {index === 5 && <div style={{ height: '10px' }} />}
+        </React.Fragment>
       ))}
+      <p>Upper Score: {upperBonus === 35 ? `${upperScore} (+35)` : upperScore}</p>
+      <p>Lower Score: {totalScore-upperScore-upperBonus}</p>
       <p>Total Score: {totalScore}</p>
       {gameOver && (
         <div>

@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { useChessGameState, gameLength } from './ChessGameState';
 import { getValidMoves } from './PieceMovement';
+import axios from 'axios'
+import ChatBot from '../ChatBot';
 
 const Chessboard = () => {
   const { gameState, updateGameState, resetGame, message, seconds } = useChessGameState();
@@ -110,18 +112,64 @@ const Chessboard = () => {
   };
 
   const handleResetClick = () => {
+    stopTimer(intervalId);
     setSelectedSquare(null);
     setValidMoves([]);
     resetGame();
   };
 
+  const [user, setUser] = useState();
+  const [errorMessage, setError] = useState('');
+  const [startTime, setStartTime] = useState(null);
+  const [timer, setTimer] = useState(0);
+  const [intervalId, setIntervalId] = useState(null);
+
+  const startTimer = () => {
+    setStartTime(Date.now());
+    const intervalId = setInterval(() => {
+      setTimer(prevTimer => prevTimer + 1);
+    }, 1000);
+    return intervalId;
+  };
+
+  const stopTimer = (intervalId) => {
+    clearInterval(intervalId);
+  };
+
   useEffect(() => {
+    startTimer()
+    const loggedInUser = localStorage.getItem('username');
+      if (loggedInUser) {
+        setUser(loggedInUser);
+      }
     if (gameState.gameOver) {
+      
+      postStatistic()
       setValidMoves([]);
       setSelectedSquare(null);
       return;
     }
   }, [gameState.gameOver]);
+
+  const postStatistic = async (intervalId) => {
+    try {
+      const game = "chess";
+      const timePlayed = Math.floor(timer);
+      const response = await axios.post(`http://127.0.0.1:8000/create-statistic/?gameType=${game}`, {
+        username: user,
+        timePlayed,
+        result: message.includes("White wins"),
+      });
+  
+      console.log(response.data);
+      stopTimer(intervalId); // Stop the timer after sending the statistic
+
+    } catch (error) {
+      setError(error.toString());
+      console.error('Error creating statistic for user:', error);
+      stopTimer(intervalId); // Stop the timer in case of an error
+    }
+  };
 
   return (    
   <div style={{ backgroundColor: '#6495ED', height: '100vh' }}>
@@ -153,6 +201,7 @@ const Chessboard = () => {
         <a href="/" style={{ textDecoration: 'none', color: 'black' }}>Back to Home</a>
       </button>
     </div>
+    <ChatBot page="Chess"/>
   </div>
   );
 };
