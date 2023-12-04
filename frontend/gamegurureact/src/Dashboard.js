@@ -95,7 +95,6 @@ const Dashboard = () => {
                 <p style={{ margin: '5px 0' }}>Games Played: {stat.gamesPlayed}</p>
                 {stat.gameType === 'yahtzee' ? (<p style={{ margin: '5px 0' }}>High Score: {stat.gamesWon}</p>) : (<p style={{ margin: '5px 0' }}>Games Won: {stat.gamesWon}</p>)}
                 <p style={{ margin: '5px 0' }}>Time Played: {stat.timePlayed} seconds</p>
-                <p style={{ margin: '5px 0' }}>Chat History: {stat.chatHistory}</p>
               </li>
             ))}
           </ul>
