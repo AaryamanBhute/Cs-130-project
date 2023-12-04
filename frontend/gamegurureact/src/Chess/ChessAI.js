@@ -127,7 +127,8 @@ const minimax = (gameState, depth, alpha, beta, maximizingPlayer, player) => {
 };
 
 // Function to make the AI move
-export const makeAIMove = (gameState) => {
+export const makeAIMove = (gameState, difficulty) => {
+    console.trace('makeAIMove called');
     const moves = getValidMoves(gameState, gameState.currentPlayer);
     if (!moves.length) {
         return gameState;
@@ -135,7 +136,7 @@ export const makeAIMove = (gameState) => {
     let bestMove = null;
     let bestEval = -Infinity;
     for (let i = 0; i < moves.length; i++) {
-        const evaluation = minimax(makeMove(gameState, moves[i]), 2, -Infinity, Infinity, true, gameState.currentPlayer);
+        const evaluation = minimax(makeMove(gameState, moves[i]), difficulty, -Infinity, Infinity, true, gameState.currentPlayer);
         if (evaluation > bestEval) {
             bestEval = evaluation;
             bestMove = moves[i];

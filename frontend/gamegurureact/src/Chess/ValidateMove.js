@@ -32,7 +32,7 @@ export const validateMove = (gameState, startRow, startCol, endRow, endCol) => {
         move.enPassant = true;
       } else {
         move.valid = (((startRow === 6 && y === -2 && !board[startRow-1][startCol]) || y === -1) && endCol === startCol && !targetPiece)
-                    || (y === -1 && xa === 1 && (targetPiece));
+                     || (y === -1 && xa === 1 && (targetPiece));
       }
       break;
 
@@ -47,7 +47,7 @@ export const validateMove = (gameState, startRow, startCol, endRow, endCol) => {
         move.enPassant = true;
       } else {
         move.valid = (((startRow === 1 && y === 2 && !board[startRow+1][startCol]) || y === 1) && endCol === startCol && !targetPiece)
-                    || (y === 1 && xa === 1 && (targetPiece));
+                     || (y === 1 && xa === 1 && (targetPiece));
       }
       break;
 
