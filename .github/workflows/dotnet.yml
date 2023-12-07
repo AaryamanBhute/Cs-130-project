@@ -20,13 +20,17 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
-    - name: Goes to directory
-      run: cd ./ChatBot
     - name: Prints directory
       run: echo "$(ls)"
     - name: Restore dependencies
-      run: dotnet restore
+      run: |
+        cd ./ChatBot
+        dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: |
+        cd ./ChatBot
+        dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: |
+        cd ./ChatBot
+        dotnet test --no-build --verbosity normal
