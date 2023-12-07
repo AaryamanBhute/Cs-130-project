@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - name: Goes to directory
-      run: cd ChatBot
+      run: cd /ChatBot
     - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
