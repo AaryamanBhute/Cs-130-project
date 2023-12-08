@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+
+/**
+ * Dashboard component displays user statistics and provides functionality to view statistics of other users.
+ */
 const Dashboard = () => {
   const [username, setUsername] = useState('');
   const [statistics, setStatistics] = useState([]);
@@ -10,7 +14,7 @@ const Dashboard = () => {
   const [currUser, setUser] = useState();
   const [displayUser, setDisplay] = useState();
 
-
+  // Effect hook to retrieve the logged-in user from local storage
   useEffect(() => {
     const loggedInUser = localStorage.getItem('username');
     if (loggedInUser) {
@@ -18,6 +22,9 @@ const Dashboard = () => {
     }
   }, []);
 
+  /**
+   * Fetches statistics for the currently logged-in user.
+   */
   const fetchUserStats = async () => {
     try {
       const response = await axios.get(`http://127.0.0.1:8000/get-user-statistics/?username=${currUser}`);
@@ -36,6 +43,9 @@ const Dashboard = () => {
     }
   }
 
+  /**
+   * Fetches statistics for the user specified by the 'username' state.
+   */
   const fetchStatistics = async () => {
     try {
       const response = await axios.get(`http://127.0.0.1:8000/get-user-statistics/?username=${username}`);
@@ -54,6 +64,10 @@ const Dashboard = () => {
     }
   };  
 
+  /**
+   * Handles the search action when a username is entered.
+   * Triggers the fetchStatistics function.
+   */
   const handleSearch = () => {
     if (username) {
       fetchStatistics();

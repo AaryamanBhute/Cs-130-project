@@ -2,13 +2,26 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+
+/**
+ * Signup component handles user registration.
+ * Allows users to sign up for GameGuru by providing username, email, and password.
+ */
 const Signup = () => {
+  // State variables to store user input
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
   const [errorMessage, setError] = useState('');
 
+  /**
+   * Handles the signup form submission.
+   * Makes a POST request to the server to sign up the user.
+   * If successful, sets the current user in local storage and navigates to the home page.
+   * Additionally, creates statistics for the new user.
+   * @param {Event} e - Form submission event
+   */
   const handleSignup = async (e) => {
     e.preventDefault();
     
