@@ -1,4 +1,32 @@
-import React, { useState, useEffect } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Yahtzee.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Yahtzee.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 import ChatBot from './ChatBot';
@@ -17,7 +45,7 @@ const calculateScores = (results) => {
   const values = Object.values(counts);
   const scoreArray = [];
 
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i &lt;= 6; i++) {
     scoreArray.push(sortedResults.filter((val) => val === i).length * i);
   }
 
@@ -31,22 +59,22 @@ const calculateScores = (results) => {
     : 0;
   scoreArray.push(foakScore);
 
-  const fhScore = values.includes(2) && values.includes(3)
+  const fhScore = values.includes(2) &amp;&amp; values.includes(3)
     ? 25
     : 0;
   scoreArray.push(fhScore);
 
-  const ssScore = sortedResults.includes(3) && sortedResults.includes(4) && ((sortedResults.includes(1) && sortedResults.includes(2)) || (sortedResults.includes(2) && sortedResults.includes(5)) || (sortedResults.includes(5) && sortedResults.includes(6)))
+  const ssScore = sortedResults.includes(3) &amp;&amp; sortedResults.includes(4) &amp;&amp; ((sortedResults.includes(1) &amp;&amp; sortedResults.includes(2)) || (sortedResults.includes(2) &amp;&amp; sortedResults.includes(5)) || (sortedResults.includes(5) &amp;&amp; sortedResults.includes(6)))
     ? 30
     : 0;
   scoreArray.push(ssScore);
 
-  const lsScore = sortedResults.includes(2) && sortedResults.includes(3) && sortedResults.includes(4) && sortedResults.includes(5) && (sortedResults.includes(1) || sortedResults.includes(6))
+  const lsScore = sortedResults.includes(2) &amp;&amp; sortedResults.includes(3) &amp;&amp; sortedResults.includes(4) &amp;&amp; sortedResults.includes(5) &amp;&amp; (sortedResults.includes(1) || sortedResults.includes(6))
     ? 40
     : 0;
   scoreArray.push(lsScore);
 
-  const yahtzeeScore = sortedResults.every((result) => result === results[0]) && results[0]
+  const yahtzeeScore = sortedResults.every((result) => result === results[0]) &amp;&amp; results[0]
     ? 50
     : 0;
   scoreArray.push(yahtzeeScore);
@@ -146,7 +174,7 @@ const Yahtzee = () => {
   const rollDice = () => {
     if (rollsLeft > 0) {
       let results = [];
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i &lt; 5; i++) {
         if (!selectedDice.includes(i + 1)) {
           const result = Math.floor(Math.random() * 6) + 1;
           results.push(result);
@@ -202,7 +230,7 @@ const Yahtzee = () => {
 
     const totalScore = newScores.reduce((acc, curr) => acc + (curr || 0), 0);
     let sum = 0;
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i &lt; 6; i++) {
       sum += newScores[i];
     }
     if (sum >= 63) {
@@ -221,24 +249,24 @@ const Yahtzee = () => {
    * @returns {JSX.Element} JSX representing the Yahtzee game interface.
    */
   return (
-    <div style={{ backgroundColor: '#FADADD', minHeight: '100vh' }}>
-      <h1 style={{ textAlign: 'center', margin: 0, paddingTop: '50px' }}>Yahtzee</h1>
-      <p style={{ textAlign: 'center' }}>
-        <a href="/" style={{ color: 'black' }}>
+    &lt;div style={{ backgroundColor: '#FADADD', minHeight: '100vh' }}>
+      &lt;h1 style={{ textAlign: 'center', margin: 0, paddingTop: '50px' }}>Yahtzee&lt;/h1>
+      &lt;p style={{ textAlign: 'center' }}>
+        &lt;a href="/" style={{ color: 'black' }}>
           Back to Home
-        </a>
-      </p>
-      <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        <button onClick={rollDice} disabled={rollsLeft === 0 || gameOver} style={{cursor: 'pointer'}}>
+        &lt;/a>
+      &lt;/p>
+      &lt;div style={{ textAlign: 'center', marginTop: '20px' }}>
+        &lt;button onClick={rollDice} disabled={rollsLeft === 0 || gameOver} style={{cursor: 'pointer'}}>
           {rollsLeft > 0 ? `Roll Dice (${rollsLeft} roll(s) left)` : 'No more rolls left'}
-        </button>
-      </div>
-      {diceRollResults.length > 0 && ( // after roll, display dice images
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <p>You rolled:</p>
-          <div>
+        &lt;/button>
+      &lt;/div>
+      {diceRollResults.length > 0 &amp;&amp; ( // after roll, display dice images
+        &lt;div style={{ textAlign: 'center', marginTop: '20px' }}>
+          &lt;p>You rolled:&lt;/p>
+          &lt;div>
             {diceRollResults.map((result, index) => (
-              <img
+              &lt;img
                 key={index}
                 src={require(`./assets/${result}.png`)}
                 alt={`Dice ${index + 1}`}
@@ -253,13 +281,13 @@ const Yahtzee = () => {
                   borderRadius: '25%',
                   clipPath: `inset(2px)`,
                 }}
-                onClick={() => rollsLeft > 0 && handleSelection(index + 1)}
+                onClick={() => rollsLeft > 0 &amp;&amp; handleSelection(index + 1)}
               />
             ))}
-          </div>
-        </div>
+          &lt;/div>
+        &lt;/div>
       )}
-      <ScoreSection // show scores
+      &lt;ScoreSection // show scores
         diceRollResults={diceRollResults}
         handleScoreSelect={handleScoreSelect}
         scores={scores}
@@ -267,8 +295,8 @@ const Yahtzee = () => {
         gameOver={gameOver}
         resetGame={resetGame}
       />
-      <ChatBot page="Yahtzee"/>
-    </div>
+      &lt;ChatBot page="Yahtzee"/>
+    &lt;/div>
   );
 };
 
@@ -283,7 +311,7 @@ const Yahtzee = () => {
  * @returns {JSX.Element} JSX representing the score section in the Yahtzee game.
  */
 const ScoreSection = ({ diceRollResults, handleScoreSelect, scores, rollsLeft, gameOver, resetGame }) => {
-  const canSelect = rollsLeft < 3;
+  const canSelect = rollsLeft &lt; 3;
   const tempScores = calculateScores(diceRollResults);
   const upperScore = scores.slice(0, 6).reduce((acc, curr) => acc + (curr || 0), 0);
   const upperBonus = upperScore >= 63 ? 35 : 0;
@@ -306,11 +334,11 @@ const ScoreSection = ({ diceRollResults, handleScoreSelect, scores, rollsLeft, g
   ];
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '10px' }}>
-      <p>Scores:</p>
+    &lt;div style={{ textAlign: 'center', marginTop: '10px' }}>
+      &lt;p>Scores:&lt;/p>
       {categories.map((category, index) => (
-        <React.Fragment key={category}>
-        <button
+        &lt;React.Fragment key={category}>
+        &lt;button
           key={category}
           onClick={() => handleScoreSelect(index + 1)}
           disabled={!canSelect || scores[index] !== null}
@@ -321,21 +349,44 @@ const ScoreSection = ({ diceRollResults, handleScoreSelect, scores, rollsLeft, g
           }}
         >
           {`${category} = ${scores[index] !== null ? scores[index] : tempScores[index]}`}
-        </button>
-        {index === 5 && <div style={{ height: '10px' }} />}
-        </React.Fragment>
+        &lt;/button>
+        {index === 5 &amp;&amp; &lt;div style={{ height: '10px' }} />}
+        &lt;/React.Fragment>
       ))}
-      <p>Upper Score: {upperBonus === 35 ? `${upperScore} (+35)` : upperScore}</p>
-      <p>Lower Score: {totalScore-upperScore-upperBonus}</p>
-      <p>Total Score: {totalScore}</p>
-      {gameOver && (
-        <div>
-          <p>Game Over!</p>
-          <button onClick={resetGame}>Reset Game</button>
-        </div>
+      &lt;p>Upper Score: {upperBonus === 35 ? `${upperScore} (+35)` : upperScore}&lt;/p>
+      &lt;p>Lower Score: {totalScore-upperScore-upperBonus}&lt;/p>
+      &lt;p>Total Score: {totalScore}&lt;/p>
+      {gameOver &amp;&amp; (
+        &lt;div>
+          &lt;p>Game Over!&lt;/p>
+          &lt;button onClick={resetGame}>Reset Game&lt;/button>
+        &lt;/div>
       )}
-    </div>
+    &lt;/div>
   );
 };
 
 export default Yahtzee;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#ScoreSection">ScoreSection</a></li><li><a href="global.html#Yahtzee">Yahtzee</a></li><li><a href="global.html#calculateScores">calculateScores</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Dec 07 2023 16:22:17 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
