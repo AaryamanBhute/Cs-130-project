@@ -4,6 +4,7 @@ import axios from 'axios';
 
 /**
  * Dashboard component displays user statistics and provides functionality to view statistics of other users.
+ * @returns {JSX.Element} Dashboard interface with user statistics and search functionalities displayed in the UI.
  */
 const Dashboard = () => {
   const [username, setUsername] = useState('');

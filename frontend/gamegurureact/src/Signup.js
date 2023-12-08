@@ -6,6 +6,7 @@ import axios from 'axios';
 /**
  * Signup component handles user registration.
  * Allows users to sign up for GameGuru by providing username, email, and password.
+ * @returns {JSX.Element} Signup form and error message (if any) displayed in the UI.
  */
 const Signup = () => {
   // State variables to store user input
