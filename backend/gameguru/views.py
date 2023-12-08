@@ -1,4 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+"""
+APIs used for posting and fetching from the backend
+"""
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from .serializers import StatisticSerializer, ChatHistorySerializer, UserSerializer
 from .models import Statistic, ChatHistory
@@ -19,6 +22,9 @@ class ChatHistoryView(viewsets.ModelViewSet):
     serializer_class = ChatHistorySerializer
     queryset = ChatHistory.objects.all()
 
+"""
+Create new user using the Django User model based on the request from React
+"""
 @api_view(['POST'])  # creates new user using builtin Django User model
 def signup(request):
     if request.method == 'POST':
@@ -40,8 +46,10 @@ def signup(request):
     else:
         return Response({'error': 'Invalid method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
-
-@api_view(['POST'])  # for now it is just creating a statistic placeholder for a specific user with default values for the other attributes
+"""
+Create statistics for the user if none exist or update stats when called
+"""
+@api_view(['POST'])
 def create_statistic(request):
     if request.method == 'POST':
         username = request.data.get('username')
@@ -191,13 +199,9 @@ def create_statistic(request):
     else:
         return Response({'error': 'Invalid method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-@api_view(['GET'])
-def get_user_info(request):
-    users = User.objects.all()
-    serializer = UserSerializer(users, many=True)
-    return Response(serializer.data)
-
-
+"""
+Return statistics for a specific user
+"""
 @api_view(['GET'])
 def get_user_statistics(request):
     username = request.query_params.get('username')
@@ -223,20 +227,10 @@ def get_user_statistics(request):
     print(serialized_statistics)
     return Response({'statistics': serialized_statistics}, status=status.HTTP_200_OK)
 
-@api_view(['GET'])
-def get_user_session(request, format=None):
-    #doesn't persist from previous request
-    content = {
-        'user': str(request.user),  # `django.contrib.auth.User` instance.
-    }
-    user = request.session.get('curr_user')
 
-    #user = curr_user
-    print("hi")
-    print(user)
-    print(content)
-    return Response(content)
-
+"""
+Authenticate user with a specific username and password
+"""
 @api_view(['POST'])
 def authenticate_user(request):
     if request.method == 'POST':
@@ -262,7 +256,10 @@ def authenticate_user(request):
 
     else:
         return Response({'error': 'Invalid method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-    
+
+"""
+Change password for the specified user/email combination
+"""
 @api_view(['POST'])
 def change_pwd(request):
     if request.method == 'POST': 

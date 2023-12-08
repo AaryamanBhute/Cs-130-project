@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
+/**
+ * Create home page
+ * @returns {JSX.Element}
+ */
 const Home = () => {
   const [user, setUser] = useState();
 
+  /**
+   * Retrieves logged in user
+   */
   useEffect(() => {
     const loggedInUser = localStorage.getItem('username');
     if (loggedInUser) {
@@ -10,6 +17,9 @@ const Home = () => {
     }
   }, []);
 
+  /**
+   * Logs user out -> remove logged in user
+   */
   const handleLogout = () => {
     // perform logout actions - clear user state and local storage
     setUser(null);
