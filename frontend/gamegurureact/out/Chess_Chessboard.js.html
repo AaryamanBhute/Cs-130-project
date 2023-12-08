@@ -1,4 +1,32 @@
-// Chessboard.js
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Chess/Chessboard.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Chess/Chessboard.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// Chessboard.js
 
 /**
  * Chessboard component.
@@ -57,7 +85,7 @@ const Chessboard = () => {
     // If a square is already selected
     if (selectedSquare) {
       // If the selected square is clicked again, deselect it and clear the valid moves
-      if (selectedSquare.row === row && selectedSquare.col === col) {
+      if (selectedSquare.row === row &amp;&amp; selectedSquare.col === col) {
         setValidMoves([]);
         setSelectedSquare(null);
         return;
@@ -66,8 +94,8 @@ const Chessboard = () => {
        * If a different square is clicked, find a valid move that starts at the selected square and ends at the clicked square.
        * @type {Object}
        */
-      const move = validMoves.find(move => move.startRow === selectedSquare.row && move.startCol === selectedSquare.col && 
-                                           move.endRow === row && move.endCol === col);
+      const move = validMoves.find(move => move.startRow === selectedSquare.row &amp;&amp; move.startCol === selectedSquare.col &amp;&amp; 
+                                           move.endRow === row &amp;&amp; move.endCol === col);
       // If no such move is found, do nothing
       if (!move) {
         return;
@@ -85,7 +113,7 @@ const Chessboard = () => {
        */
       const piece = gameState.board[row][col];
       // Check if the piece exists and is the correct color
-      if (piece && piece[0] === gameState.currentPlayer) {
+      if (piece &amp;&amp; piece[0] === gameState.currentPlayer) {
         setSelectedSquare({ row, col });
         setValidMoves(getValidMoves(gameState, gameState.currentPlayer));
       }
@@ -105,14 +133,14 @@ const Chessboard = () => {
      * Check if the square is a valid move.
      * @type {boolean}
      */
-    const isHighlighted = validMoves.some(move => selectedSquare.row === move.startRow && selectedSquare.col === move.startCol
-                                                  && move.endRow === row && move.endCol === col);
+    const isHighlighted = validMoves.some(move => selectedSquare.row === move.startRow &amp;&amp; selectedSquare.col === move.startCol
+                                                  &amp;&amp; move.endRow === row &amp;&amp; move.endCol === col);
     /**
      * Check if the square is part of the last move.
      * @type {boolean}
      */
-    const partOfLastMove = gameState.lastMove && ((gameState.lastMove.startRow === row && gameState.lastMove.startCol === col)
-                                                  || (gameState.lastMove.endRow === row && gameState.lastMove.endCol === col));
+    const partOfLastMove = gameState.lastMove &amp;&amp; ((gameState.lastMove.startRow === row &amp;&amp; gameState.lastMove.startCol === col)
+                                                  || (gameState.lastMove.endRow === row &amp;&amp; gameState.lastMove.endCol === col));
     /**
      * Calculate background color based on row and column and highlight the square if it's a valid move.
      * @type {string}
@@ -135,28 +163,28 @@ const Chessboard = () => {
      * Check if the square is selected.
      * @type {boolean}
      */
-    const isSelected = selectedSquare && selectedSquare.row === row && selectedSquare.col === col;
+    const isSelected = selectedSquare &amp;&amp; selectedSquare.row === row &amp;&amp; selectedSquare.col === col;
 
     /**
      * Render a square with a piece if it exists.
      * @returns {JSX.Element} The rendered square.
      */
     return (
-      <div key={`${row}-${col}`}
+      &lt;div key={`${row}-${col}`}
         style={{ ...squareStyle,
           width: isSelected ? `${squareSize-4}px` : `${squareSize}px`,
           height: isSelected ? `${squareSize-4}px` : `${squareSize}px`,
           border: isSelected ? '2px solid red' : 'none' }}
         onClick={() => handleSquareClick(row, col)}
       >
-        {piece && (
-          <img
+        {piece &amp;&amp; (
+          &lt;img
             src={require(`../assets/${piece}.png`)} // Update the path based on your asset structure
             alt={piece}
             style={{ width: `${squareSize}px`, height: `${squareSize}px` }}
           />
         )}
-      </div>
+      &lt;/div>
     );
   };
   /**
@@ -169,18 +197,18 @@ const Chessboard = () => {
    */
   const CapturedPieces = ({ player, pieces }) => {
     return (
-      <div style={{ backgroundColor: '#eeeeee', padding: '0px 10px 0px 10px', border: '2px solid black' }}>
-        <h2>{player}'s Captured Pieces:</h2>
-        <ul>
+      &lt;div style={{ backgroundColor: '#eeeeee', padding: '0px 10px 0px 10px', border: '2px solid black' }}>
+        &lt;h2>{player}'s Captured Pieces:&lt;/h2>
+        &lt;ul>
           {pieces.map((piece) => (
-              <img
+              &lt;img
                 src={require(`../assets/${piece}.png`)} // Update the path based on your asset structure
                 alt={piece}
                 style={{ width: `${squareSize/2}px`, height: `${squareSize/2}px` }}
               />
           ))}
-        </ul>
-      </div>
+        &lt;/ul>
+      &lt;/div>
     );
   }
   /**
@@ -192,14 +220,14 @@ const Chessboard = () => {
    */
   const Timer = ({ player }) => {
     const whiteSeconds = (timeLimit - seconds.white) % 60;
-    const whiteTime = timeLimit ? `${Math.floor((timeLimit - seconds.white) / 60)}:${whiteSeconds < 10 ? '0' + whiteSeconds : whiteSeconds}` : 'N/A';
+    const whiteTime = timeLimit ? `${Math.floor((timeLimit - seconds.white) / 60)}:${whiteSeconds &lt; 10 ? '0' + whiteSeconds : whiteSeconds}` : 'N/A';
     const blackSeconds = (timeLimit - seconds.black) % 60;
-    const blackTime = timeLimit ? `${Math.floor((timeLimit - seconds.black) / 60)}:${blackSeconds < 10 ? '0' + blackSeconds : blackSeconds}` : 'N/A';
+    const blackTime = timeLimit ? `${Math.floor((timeLimit - seconds.black) / 60)}:${blackSeconds &lt; 10 ? '0' + blackSeconds : blackSeconds}` : 'N/A';
     return (
-      <div style={{ backgroundColor: '#eeeeee', padding: '0px 10px 0px 10px', border: '2px solid black' }}>
-        <h2>{player}'s Time Remaining:</h2>
-        <h2>{player === 'White' ? whiteTime : blackTime}</h2>
-      </div>
+      &lt;div style={{ backgroundColor: '#eeeeee', padding: '0px 10px 0px 10px', border: '2px solid black' }}>
+        &lt;h2>{player}'s Time Remaining:&lt;/h2>
+        &lt;h2>{player === 'White' ? whiteTime : blackTime}&lt;/h2>
+      &lt;/div>
     );
   };
 
@@ -337,68 +365,90 @@ const Chessboard = () => {
    * @returns {JSX.Element} The rendered chessboard.
    */
   return (   
-  <div style={{ backgroundColor: '#6495ED', height: '100vh' }}>
-    <Modal isOpen={modalIsOpen}>
-      <h2 style={{ fontSize: '2em', textAlign: 'center' }}>Chess Game Selection:</h2>
-      <form onSubmit={handleGameTypeSelect} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div style={{ fontSize: '1.5em', marginBottom: '1em' }}>
-          <h3>Game Type</h3>
-          <select name="gameType" style={{ fontSize: '1.2em' }}>
+  &lt;div style={{ backgroundColor: '#6495ED', height: '100vh' }}>
+    &lt;Modal isOpen={modalIsOpen}>
+      &lt;h2 style={{ fontSize: '2em', textAlign: 'center' }}>Chess Game Selection:&lt;/h2>
+      &lt;form onSubmit={handleGameTypeSelect} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        &lt;div style={{ fontSize: '1.5em', marginBottom: '1em' }}>
+          &lt;h3>Game Type&lt;/h3>
+          &lt;select name="gameType" style={{ fontSize: '1.2em' }}>
             {['Free Play', 'Easy', 'Medium', 'Hard'].map(type =>
-              <option value={type}>{type}</option>
+              &lt;option value={type}>{type}&lt;/option>
             )}
-          </select>
-        </div>
-        <div style={{ fontSize: '1.5em', marginBottom: '1em' }}>
-          <h3>Time Limit</h3>
-          <select name="timeLimit" style={{ fontSize: '1.2em' }}>
+          &lt;/select>
+        &lt;/div>
+        &lt;div style={{ fontSize: '1.5em', marginBottom: '1em' }}>
+          &lt;h3>Time Limit&lt;/h3>
+          &lt;select name="timeLimit" style={{ fontSize: '1.2em' }}>
             {['No Time Limit', '10 Minutes', '5 Minutes', '1 Minute'].map(time =>
-              <option value={time}>{time}</option>
+              &lt;option value={time}>{time}&lt;/option>
             )}
-          </select>
-        </div>
-        <div style={{ fontSize: '1.5em', marginBottom: '3em' }}>
-          <h3>Player Color</h3>
-          <select name="playerColor" style={{ fontSize: '1.2em' }}>
+          &lt;/select>
+        &lt;/div>
+        &lt;div style={{ fontSize: '1.5em', marginBottom: '3em' }}>
+          &lt;h3>Player Color&lt;/h3>
+          &lt;select name="playerColor" style={{ fontSize: '1.2em' }}>
             {['White', 'Black', 'Random'].map(color =>
-              <option value={color}>{color}</option>
+              &lt;option value={color}>{color}&lt;/option>
             )}
-          </select>
-        </div>
-        <button type="submit" style={{ fontSize: '2.5em' }}>Start Game</button>
-      </form>
-    </Modal>
-    <h1 style={{ marginTop: '0px', paddingTop: '40px', font: 'bold 50px Arial', textAlign: 'center', color: '#eeeeee' }}>Chess</h1>
-    <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', margin: '20px' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: `${squareSize*2}px` }}>
-        <CapturedPieces player={!gameState.whiteOnBottom ? 'White' : 'Black'} pieces={gameState.whiteCapturedPieces} />
-        <h1 style={{ font: 'bold 25px Arial', textAlign: 'center', color: '#eeeeee' }}>{message}</h1>
-        <CapturedPieces player={gameState.whiteOnBottom ? 'White' : 'Black'} pieces={gameState.blackCapturedPieces} />
-      </div>
-      <div className="chessboard-container" style={{ border: '10px solid black', margin: '20px' }}>
+          &lt;/select>
+        &lt;/div>
+        &lt;button type="submit" style={{ fontSize: '2.5em' }}>Start Game&lt;/button>
+      &lt;/form>
+    &lt;/Modal>
+    &lt;h1 style={{ marginTop: '0px', paddingTop: '40px', font: 'bold 50px Arial', textAlign: 'center', color: '#eeeeee' }}>Chess&lt;/h1>
+    &lt;div style={{ display: 'flex', justifyContent: 'center', gap: '20px', margin: '20px' }}>
+      &lt;div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: `${squareSize*2}px` }}>
+        &lt;CapturedPieces player={!gameState.whiteOnBottom ? 'White' : 'Black'} pieces={gameState.whiteCapturedPieces} />
+        &lt;h1 style={{ font: 'bold 25px Arial', textAlign: 'center', color: '#eeeeee' }}>{message}&lt;/h1>
+        &lt;CapturedPieces player={gameState.whiteOnBottom ? 'White' : 'Black'} pieces={gameState.blackCapturedPieces} />
+      &lt;/div>
+      &lt;div className="chessboard-container" style={{ border: '10px solid black', margin: '20px' }}>
         {/* Render each row */}
         {gameState.board.map((row, rowIndex) => (
-          <div key={rowIndex} style={{ display: 'flex' }}>
+          &lt;div key={rowIndex} style={{ display: 'flex' }}>
             {/* Render squares for each row */}
             {row.map((piece, colIndex) => renderSquare(rowIndex, colIndex, piece))}
-          </div>
+          &lt;/div>
         ))}
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: `${squareSize*5}px` }}>
-        <Timer player={!gameState.whiteOnBottom ? 'White' : 'Black'} />
-        <Timer player={gameState.whiteOnBottom ? 'White' : 'Black'} />
-      </div>
-    </div>
-    <div style={{ display: 'flex', justifyContent: 'center', gap: '50px', margin: '20px' }}>
-      <button style={{ border: '1px solid black', height: '50px', font: 'bold 30px Arial' }} 
-              onClick={handleNewGameClick}>New Game</button>
-      <button style={{ border: '1px solid black', height: '50px', font: 'bold 30px Arial' }}>
-        <a href="/" style={{ textDecoration: 'none', color: 'black' }}>Back to Home</a>
-      </button>
-    </div>
-    <ChatBot page="Chess"/>
-  </div>
+      &lt;/div>
+      &lt;div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: `${squareSize*5}px` }}>
+        &lt;Timer player={!gameState.whiteOnBottom ? 'White' : 'Black'} />
+        &lt;Timer player={gameState.whiteOnBottom ? 'White' : 'Black'} />
+      &lt;/div>
+    &lt;/div>
+    &lt;div style={{ display: 'flex', justifyContent: 'center', gap: '50px', margin: '20px' }}>
+      &lt;button style={{ border: '1px solid black', height: '50px', font: 'bold 30px Arial' }} 
+              onClick={handleNewGameClick}>New Game&lt;/button>
+      &lt;button style={{ border: '1px solid black', height: '50px', font: 'bold 30px Arial' }}>
+        &lt;a href="/" style={{ textDecoration: 'none', color: 'black' }}>Back to Home&lt;/a>
+      &lt;/button>
+    &lt;/div>
+    &lt;ChatBot page="Chess"/>
+  &lt;/div>
   );
 };
 
-export default Chessboard;
+export default Chessboard;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Chess_ChessAI.html">Chess/ChessAI</a></li><li><a href="module-Chess_ChessGameState.html">Chess/ChessGameState</a></li><li><a href="module-Chess_Chessboard.html">Chess/Chessboard</a></li><li><a href="module-Chess_PieceMovement.html">Chess/PieceMovement</a></li><li><a href="module-Chess_ValidateMove.html">Chess/ValidateMove</a></li></ul><h3>Global</h3><ul><li><a href="global.html#GameBoard">GameBoard</a></li><li><a href="global.html#Mastermind">Mastermind</a></li><li><a href="global.html#ScoreSection">ScoreSection</a></li><li><a href="global.html#Yahtzee">Yahtzee</a></li><li><a href="global.html#calculateScores">calculateScores</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Dec 07 2023 17:10:59 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

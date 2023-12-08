@@ -1,4 +1,32 @@
-// ValidateMove.js
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ValidateMove.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: ValidateMove.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// ValidateMove.js
 
 /**
  * ValidateMove Implementation.
@@ -38,69 +66,69 @@ export const validateMove = (gameState, startRow, startCol, endRow, endCol) => {
   // Add specific rules based on the type of piece
   switch (piece) {
     case bottomPawnColor:
-      if (lastMove && lastMove.piece === topPawnColor && 
-          Math.abs(lastMove.startRow - lastMove.endRow) === 2 && 
-          Math.abs(lastMove.endCol - startCol) === 1 && 
-          lastMove.endRow - endRow === 1 && 
-          startRow === lastMove.endRow && 
+      if (lastMove &amp;&amp; lastMove.piece === topPawnColor &amp;&amp; 
+          Math.abs(lastMove.startRow - lastMove.endRow) === 2 &amp;&amp; 
+          Math.abs(lastMove.endCol - startCol) === 1 &amp;&amp; 
+          lastMove.endRow - endRow === 1 &amp;&amp; 
+          startRow === lastMove.endRow &amp;&amp; 
           endCol === lastMove.endCol) {
         move.valid = true;
         move.enPassant = true;
       } else {
-        move.valid = (((startRow === 6 && y === -2 && !board[startRow-1][startCol]) || y === -1) && endCol === startCol && !targetPiece)
-                     || (y === -1 && xa === 1 && (targetPiece));
+        move.valid = (((startRow === 6 &amp;&amp; y === -2 &amp;&amp; !board[startRow-1][startCol]) || y === -1) &amp;&amp; endCol === startCol &amp;&amp; !targetPiece)
+                     || (y === -1 &amp;&amp; xa === 1 &amp;&amp; (targetPiece));
       }
       break;
 
     case topPawnColor:
-      if (lastMove && lastMove.piece === bottomPawnColor && 
-          Math.abs(lastMove.startRow - lastMove.endRow) === 2 && 
-          Math.abs(lastMove.endCol - startCol) === 1 && 
-          endRow - lastMove.endRow === 1 && 
-          startRow === lastMove.endRow && 
+      if (lastMove &amp;&amp; lastMove.piece === bottomPawnColor &amp;&amp; 
+          Math.abs(lastMove.startRow - lastMove.endRow) === 2 &amp;&amp; 
+          Math.abs(lastMove.endCol - startCol) === 1 &amp;&amp; 
+          endRow - lastMove.endRow === 1 &amp;&amp; 
+          startRow === lastMove.endRow &amp;&amp; 
           endCol === lastMove.endCol) {
         move.valid = true;
         move.enPassant = true;
       } else {
-        move.valid = (((startRow === 1 && y === 2 && !board[startRow+1][startCol]) || y === 1) && endCol === startCol && !targetPiece)
-                     || (y === 1 && xa === 1 && (targetPiece));
+        move.valid = (((startRow === 1 &amp;&amp; y === 2 &amp;&amp; !board[startRow+1][startCol]) || y === 1) &amp;&amp; endCol === startCol &amp;&amp; !targetPiece)
+                     || (y === 1 &amp;&amp; xa === 1 &amp;&amp; (targetPiece));
       }
       break;
 
     case 'wknight':
     case 'bknight':
-      move.valid = xa + ya === 3 && xa > 0 && ya > 0;
+      move.valid = xa + ya === 3 &amp;&amp; xa > 0 &amp;&amp; ya > 0;
       break;
 
     case 'wking':
       // handle white castling
-      if ((gameState.whiteOnBottom && ((endRow === 7 && endCol === 1 && !board[7][1] && !board[7][2] && !board[7][3] && gameState.specialRequirements.whiteLongCastle) ||
-          (endRow === 7 && endCol === 6 && !board[7][5] && !board[7][6] && gameState.specialRequirements.whiteShortCastle))) ||
-          (!gameState.whiteOnBottom && ((endRow === 0 && endCol === 1 && !board[0][1] && !board[0][2] && gameState.specialRequirements.whiteShortCastle) ||
-          (endRow === 0 && endCol === 6 && !board[0][4] && !board[0][5] && !board[0][6] && gameState.specialRequirements.whiteLongCastle)))) {
+      if ((gameState.whiteOnBottom &amp;&amp; ((endRow === 7 &amp;&amp; endCol === 1 &amp;&amp; !board[7][1] &amp;&amp; !board[7][2] &amp;&amp; !board[7][3] &amp;&amp; gameState.specialRequirements.whiteLongCastle) ||
+          (endRow === 7 &amp;&amp; endCol === 6 &amp;&amp; !board[7][5] &amp;&amp; !board[7][6] &amp;&amp; gameState.specialRequirements.whiteShortCastle))) ||
+          (!gameState.whiteOnBottom &amp;&amp; ((endRow === 0 &amp;&amp; endCol === 1 &amp;&amp; !board[0][1] &amp;&amp; !board[0][2] &amp;&amp; gameState.specialRequirements.whiteShortCastle) ||
+          (endRow === 0 &amp;&amp; endCol === 6 &amp;&amp; !board[0][4] &amp;&amp; !board[0][5] &amp;&amp; !board[0][6] &amp;&amp; gameState.specialRequirements.whiteLongCastle)))) {
         move.valid = true;
         move.castle = true;
         move.specialRequirements.whiteShortCastle = false;
         move.specialRequirements.whiteLongCastle = false;
       } else {
         // regular white king movement
-        move.valid = xa <= 1 && ya <= 1;
+        move.valid = xa &lt;= 1 &amp;&amp; ya &lt;= 1;
       }
       break;
 
     case 'bking':
       // handle black castling
-      if ((!gameState.whiteOnBottom && ((endRow === 7 && endCol === 1 && !board[7][1] && !board[7][2] && gameState.specialRequirements.blackShortCastle) ||
-          (endRow === 7 && endCol === 6 && !board[7][4] && !board[7][5] && !board[7][6] && gameState.specialRequirements.blackLongCastle))) ||
-          (gameState.whiteOnBottom && ((endRow === 0 && endCol === 1 && !board[0][1] && !board[0][2] && !board[0][3] && gameState.specialRequirements.blackLongCastle) ||
-          (endRow === 0 && endCol === 6 && !board[0][5] && !board[0][6] && gameState.specialRequirements.blackShortCastle)))) {
+      if ((!gameState.whiteOnBottom &amp;&amp; ((endRow === 7 &amp;&amp; endCol === 1 &amp;&amp; !board[7][1] &amp;&amp; !board[7][2] &amp;&amp; gameState.specialRequirements.blackShortCastle) ||
+          (endRow === 7 &amp;&amp; endCol === 6 &amp;&amp; !board[7][4] &amp;&amp; !board[7][5] &amp;&amp; !board[7][6] &amp;&amp; gameState.specialRequirements.blackLongCastle))) ||
+          (gameState.whiteOnBottom &amp;&amp; ((endRow === 0 &amp;&amp; endCol === 1 &amp;&amp; !board[0][1] &amp;&amp; !board[0][2] &amp;&amp; !board[0][3] &amp;&amp; gameState.specialRequirements.blackLongCastle) ||
+          (endRow === 0 &amp;&amp; endCol === 6 &amp;&amp; !board[0][5] &amp;&amp; !board[0][6] &amp;&amp; gameState.specialRequirements.blackShortCastle)))) {
         move.valid = true;
         move.castle = true;
         move.specialRequirements.blackShortCastle = false;
         move.specialRequirements.blackLongCastle = false;
       } else {
         // regular black king movement
-        move.valid = xa <= 1 && ya <= 1;
+        move.valid = xa &lt;= 1 &amp;&amp; ya &lt;= 1;
       }
       break;
 
@@ -108,21 +136,21 @@ export const validateMove = (gameState, startRow, startCol, endRow, endCol) => {
     case 'brook':
       move.valid = true;
 
-      if (startRow !== endRow && startCol !== endCol) {
+      if (startRow !== endRow &amp;&amp; startCol !== endCol) {
         move.valid = false;
         break;
       }
 
       if (endRow > startRow) {
-        for (let i = startRow + 1; i < endRow; i++) {
+        for (let i = startRow + 1; i &lt; endRow; i++) {
           if (board[i][endCol]) {
             move.valid = false;
             break;
           }
         }
       }
-      else if (endRow < startRow) {
-        for (let i = endRow + 1; i < startRow; i++) {
+      else if (endRow &lt; startRow) {
+        for (let i = endRow + 1; i &lt; startRow; i++) {
           if (board[i][endCol]) {
             move.valid = false;
             break;
@@ -130,15 +158,15 @@ export const validateMove = (gameState, startRow, startCol, endRow, endCol) => {
         }
       }
       else if (endCol > startCol) {
-        for (let i = startCol + 1; i < endCol; i++) {
+        for (let i = startCol + 1; i &lt; endCol; i++) {
           if (board[endRow][i]) {
             move.valid = false;
             break;
           }
         }
       }
-      else if (endCol < startCol) {
-        for (let i = endCol + 1; i < startCol; i++) {
+      else if (endCol &lt; startCol) {
+        for (let i = endCol + 1; i &lt; startCol; i++) {
           if (board[endRow][i]) {
             move.valid = false;
             break;
@@ -156,26 +184,26 @@ export const validateMove = (gameState, startRow, startCol, endRow, endCol) => {
         break;
       }
 
-      for (let i = 1; i < xa; i++) {
-        if (x < 0 && y < 0) {
+      for (let i = 1; i &lt; xa; i++) {
+        if (x &lt; 0 &amp;&amp; y &lt; 0) {
           if (board[startRow - i][startCol - i]) {
             move.valid = false;
             break;
           }
         }
-        if (x < 0 && y > 0) {
+        if (x &lt; 0 &amp;&amp; y > 0) {
           if (board[startRow + i][startCol - i]) {
             move.valid = false;
             break;
           }
         }
-        if (x > 0 && y < 0) {
+        if (x > 0 &amp;&amp; y &lt; 0) {
           if (board[startRow - i][startCol + i]) {
             move.valid = false;
             break;
           }
         }
-        if (x > 0 && y > 0) {
+        if (x > 0 &amp;&amp; y > 0) {
           if (board[startRow + i][startCol + i]) {
             move.valid = false;
             break;
@@ -193,26 +221,26 @@ export const validateMove = (gameState, startRow, startCol, endRow, endCol) => {
         break;
       }
       if (xa === ya) {
-        for (let i = 1; i < xa; i++) {
-          if (x < 0 && y < 0) {
+        for (let i = 1; i &lt; xa; i++) {
+          if (x &lt; 0 &amp;&amp; y &lt; 0) {
             if (board[startRow - i][startCol - i]) {
               move.valid = false;
               break;
             }
           }
-          if (x < 0 && y > 0) {
+          if (x &lt; 0 &amp;&amp; y > 0) {
             if (board[startRow + i][startCol - i]) {
               move.valid = false;
               break;
             }
           }
-          if (x > 0 && y < 0) {
+          if (x > 0 &amp;&amp; y &lt; 0) {
             if (board[startRow - i][startCol + i]) {
               move.valid = false;
               break;
             }
           }
-          if (x > 0 && y > 0) {
+          if (x > 0 &amp;&amp; y > 0) {
             if (board[startRow + i][startCol + i]) {
               move.valid = false;
               break;
@@ -222,15 +250,15 @@ export const validateMove = (gameState, startRow, startCol, endRow, endCol) => {
       }
       else if (startCol === endCol) {
         if (endRow > startRow) {
-          for (let i = startRow + 1; i < endRow; i++) {
+          for (let i = startRow + 1; i &lt; endRow; i++) {
             if (board[i][endCol]) {
               move.valid = false;
               break;
             }
           }
         }
-        else if (endRow < startRow) {
-          for (let i = endRow + 1; i < startRow; i++) {
+        else if (endRow &lt; startRow) {
+          for (let i = endRow + 1; i &lt; startRow; i++) {
             if (board[i][endCol]) {
               move.valid = false;
               break;
@@ -240,15 +268,15 @@ export const validateMove = (gameState, startRow, startCol, endRow, endCol) => {
       }
       else if (startRow === endRow) {
         if (endCol > startCol) {
-          for (let i = startCol + 1; i < endCol; i++) {
+          for (let i = startCol + 1; i &lt; endCol; i++) {
             if (board[endRow][i]) {
               move.valid = false;
               break;
             }
           }
         }
-        else if (endCol < startCol) {
-          for (let i = endCol + 1; i < startCol; i++) {
+        else if (endCol &lt; startCol) {
+          for (let i = endCol + 1; i &lt; startCol; i++) {
             if (board[endRow][i]) {
               move.valid = false;
               break;
@@ -263,25 +291,25 @@ export const validateMove = (gameState, startRow, startCol, endRow, endCol) => {
   }
 
   if (move.valid) {
-    if ((startRow === 0 && startCol === 0) || (endRow === 0 && endCol === 0)) {
+    if ((startRow === 0 &amp;&amp; startCol === 0) || (endRow === 0 &amp;&amp; endCol === 0)) {
       if (gameState.whiteOnBottom) {
         move.specialRequirements.blackLongCastle = false;
       } else {
         move.specialRequirements.whiteShortCastle = false;
       }
-    } else if ((startRow === 0 && startCol === 7) || (endRow === 0 && endCol === 7)) {
+    } else if ((startRow === 0 &amp;&amp; startCol === 7) || (endRow === 0 &amp;&amp; endCol === 7)) {
       if (gameState.whiteOnBottom) {
         move.specialRequirements.blackShortCastle = false;
       } else {
         move.specialRequirements.whiteLongCastle = false;
       }
-    } else if ((startRow === 7 && startCol === 0) || (endRow === 7 && endCol === 0)) {
+    } else if ((startRow === 7 &amp;&amp; startCol === 0) || (endRow === 7 &amp;&amp; endCol === 0)) {
       if (gameState.whiteOnBottom) {
         move.specialRequirements.whiteLongCastle = false;
       } else {
         move.specialRequirements.blackShortCastle = false;
       }
-    } else if ((startRow === 7 && startCol === 7) || (endRow === 7 && endCol === 7)) {
+    } else if ((startRow === 7 &amp;&amp; startCol === 7) || (endRow === 7 &amp;&amp; endCol === 7)) {
       if (gameState.whiteOnBottom) {
         move.specialRequirements.whiteShortCastle = false;
       } else {
@@ -290,4 +318,26 @@ export const validateMove = (gameState, startRow, startCol, endRow, endCol) => {
     }
   }
   return move;
-};
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Chess_ChessAI.html">Chess/ChessAI</a></li><li><a href="module-Chess_ChessGameState.html">Chess/ChessGameState</a></li><li><a href="module-Chess_Chessboard.html">Chess/Chessboard</a></li><li><a href="module-Chess_PieceMovement.html">Chess/PieceMovement</a></li><li><a href="module-Chess_ValidateMove.html">Chess/ValidateMove</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Dec 07 2023 17:10:28 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,4 +1,32 @@
-import React, { useState, useEffect } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Mastermind.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Mastermind.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
 import ChatBot from './ChatBot';
 import axios from 'axios';
 
@@ -17,13 +45,13 @@ import axios from 'axios';
  */
 const GameBoard = ({ colors, handleColorSelection, guesses, handleGuessColor, activeRow, feedback, checkGuess, code, gameResult }) => {
   return(
-    <>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+    &lt;>
+        &lt;div style={{ display: 'flex', justifyContent: 'center' }}>
         Your Options:
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        &lt;/div>
+        &lt;div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         {colors.map((color, index) => ( // color dots
-            <div
+            &lt;div
             key={index}
             style={{
                 width: '20px',
@@ -36,11 +64,11 @@ const GameBoard = ({ colors, handleColorSelection, guesses, handleGuessColor, ac
             onClick={() => handleColorSelection(color)}
             />
         ))}
-        </div>
+        &lt;/div>
         {Array.from({ length: 8 }, (_, i) => i).map((row) => ( // black dots for guesses
-        <div key={row} style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+        &lt;div key={row} style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
           {guesses.slice(row * 4, row * 4 + 4).map((color, index) => (
-          <div
+          &lt;div
             key={index}
             style={{
             width: '20px',
@@ -53,13 +81,13 @@ const GameBoard = ({ colors, handleColorSelection, guesses, handleGuessColor, ac
             onClick={() => handleGuessColor(row * 4 + index)}
           />
           ))}
-          <div style={{ display: 'flex', marginLeft: '5px', marginTop: '5px' }}>
+          &lt;div style={{ display: 'flex', marginLeft: '5px', marginTop: '5px' }}>
             {Array.from({ length: 2 }, (_, dotIndex) => ( // feedback dots
-              <div key={dotIndex}>
+              &lt;div key={dotIndex}>
                 {Array.from({ length: 2 }, (_, colIndex) => (
-                  <div key={colIndex}>
+                  &lt;div key={colIndex}>
                     {(
-                      <div
+                      &lt;div
                         style={{
                           width: '10px',
                           height: '10px',
@@ -74,29 +102,29 @@ const GameBoard = ({ colors, handleColorSelection, guesses, handleGuessColor, ac
                         }}
                       />
                     )}
-                  </div>
+                  &lt;/div>
                 ))}
-              </div>
+              &lt;/div>
             ))}
-          </div>
-        </div>
+          &lt;/div>
+        &lt;/div>
         ))}
-        {activeRow <= 7 && gameResult === "IP" && guesses.slice(activeRow * 4, activeRow * 4 + 4).every((color) => color !== 'black') && (
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-          <button onClick={checkGuess} style={{ padding: '10px 20px', fontSize: '16px' }}>
+        {activeRow &lt;= 7 &amp;&amp; gameResult === "IP" &amp;&amp; guesses.slice(activeRow * 4, activeRow * 4 + 4).every((color) => color !== 'black') &amp;&amp; (
+        &lt;div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+          &lt;button onClick={checkGuess} style={{ padding: '10px 20px', fontSize: '16px' }}>
             Check
-          </button>
-        </div>
+          &lt;/button>
+        &lt;/div>
         )}
-        {gameResult === "WIN" && (<div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        {gameResult === "WIN" &amp;&amp; (&lt;div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         You Won!
-        </div>)}
-        {gameResult === "LOSS" && (<div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        &lt;/div>)}
+        {gameResult === "LOSS" &amp;&amp; (&lt;div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         You Lost! The Code Was:
-        </div>)}
-        {gameResult === "LOSS" && (<div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        &lt;/div>)}
+        {gameResult === "LOSS" &amp;&amp; (&lt;div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         {code.map((color, index) => (
-            <div
+            &lt;div
             key={index}
             style={{
                 width: '20px',
@@ -107,8 +135,8 @@ const GameBoard = ({ colors, handleColorSelection, guesses, handleGuessColor, ac
             }}
             />
         ))}
-        </div>)}
-    </>
+        &lt;/div>)}
+    &lt;/>
   );
 };
 
@@ -209,7 +237,7 @@ const Mastermind = () => {
    */
   const generateCode = () => {
     const selectedColors = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i &lt; 4; i++) {
       const randomIndex = Math.floor(Math.random() * colors.length);
       selectedColors.push(colors[randomIndex]);
     }
@@ -230,7 +258,7 @@ const Mastermind = () => {
    */
   const handleGuessColor = (index) => {
     const row = Math.floor(index / 4);
-    if (selectedColor && row === activeRow) {
+    if (selectedColor &amp;&amp; row === activeRow) {
       const updatedGuesses = [...guesses];
       updatedGuesses[index] = selectedColor;
       setGuesses(updatedGuesses);
@@ -260,14 +288,14 @@ const Mastermind = () => {
     let black = 0; // color and pos
     let white = 0; // just color
     const codeCopy = [...code];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i &lt; 4; i++) {
         if (currRow[i] === code[i]) {
             black++;
             codeCopy[i] = null;
         }
     }
-    for (let i = 0; i < 4; i++) {
-        if (currRow[i] !== code[i] && codeCopy.includes(currRow[i])) {
+    for (let i = 0; i &lt; 4; i++) {
+        if (currRow[i] !== code[i] &amp;&amp; codeCopy.includes(currRow[i])) {
             white++;
             const index = codeCopy.indexOf(currRow[i]);
             codeCopy[index] = null;
@@ -299,22 +327,22 @@ const Mastermind = () => {
    * @returns {JSX.Element} JSX element representing the game interface
    */
   return (
-    <div style={{ backgroundColor: '#0b5c95', minHeight: '100vh' }}>
-      <h1 style={{ textAlign: 'center', margin: 0, paddingTop: '50px' }}>Mastermind</h1>
-      <p style={{ textAlign: 'center' }}>
-        <a href="/" style={{ color: 'black' }}>
+    &lt;div style={{ backgroundColor: '#0b5c95', minHeight: '100vh' }}>
+      &lt;h1 style={{ textAlign: 'center', margin: 0, paddingTop: '50px' }}>Mastermind&lt;/h1>
+      &lt;p style={{ textAlign: 'center' }}>
+        &lt;a href="/" style={{ color: 'black' }}>
           Back to Home
-        </a>
-      </p>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        {!gameStarted && (
-          <button onClick={initSetup} style={{ padding: '10px 20px', fontSize: '16px' }}>
+        &lt;/a>
+      &lt;/p>
+      &lt;div style={{ display: 'flex', justifyContent: 'center' }}>
+        {!gameStarted &amp;&amp; (
+          &lt;button onClick={initSetup} style={{ padding: '10px 20px', fontSize: '16px' }}>
             Start Game
-          </button>
+          &lt;/button>
         )}
-      </div>
-      {gameStarted && (
-        <GameBoard
+      &lt;/div>
+      {gameStarted &amp;&amp; (
+        &lt;GameBoard
           colors={colors}
           handleColorSelection={handleColorSelection}
           guesses={guesses}
@@ -326,16 +354,39 @@ const Mastermind = () => {
           gameResult={gameResult}
         />
       )}
-      {(activeRow === 8 || gameResult !== "IP") && (
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-          <button onClick={resetGame} style={{ padding: '10px 20px', fontSize: '16px' }}>
+      {(activeRow === 8 || gameResult !== "IP") &amp;&amp; (
+        &lt;div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+          &lt;button onClick={resetGame} style={{ padding: '10px 20px', fontSize: '16px' }}>
             Play Again
-          </button>
-        </div>
+          &lt;/button>
+        &lt;/div>
       )}
-      <ChatBot page="Mastermind"/>
-    </div>
+      &lt;ChatBot page="Mastermind"/>
+    &lt;/div>
   );
 };
 
 export default Mastermind;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Chess_ChessAI.html">Chess/ChessAI</a></li><li><a href="module-Chess_ChessGameState.html">Chess/ChessGameState</a></li><li><a href="module-Chess_Chessboard.html">Chess/Chessboard</a></li><li><a href="module-Chess_PieceMovement.html">Chess/PieceMovement</a></li><li><a href="module-Chess_ValidateMove.html">Chess/ValidateMove</a></li></ul><h3>Global</h3><ul><li><a href="global.html#GameBoard">GameBoard</a></li><li><a href="global.html#Mastermind">Mastermind</a></li><li><a href="global.html#ScoreSection">ScoreSection</a></li><li><a href="global.html#Yahtzee">Yahtzee</a></li><li><a href="global.html#calculateScores">calculateScores</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Dec 07 2023 17:10:59 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
