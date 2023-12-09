@@ -2,12 +2,20 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+/**
+ * Returns log in page
+ * @returns {JSX.Element}
+ */
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const [errorMessage, setError] = useState('');
 
+  /**
+   * authenticate user's credentials through an axios call to the database
+   * @param {*} e - event, triggered when login button clicked
+   */
   const handleLogin = async (e) => {
     e.preventDefault();
     

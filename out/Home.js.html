@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Home.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Home.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
+
+/**
+ * Create home page
+ * @returns {JSX.Element}
+ */
+const Home = () => {
+  const [user, setUser] = useState();
+
+  /**
+   * Retrieves logged in user
+   */
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem('username');
+    if (loggedInUser) {
+      setUser(loggedInUser);
+    }
+  }, []);
+
+  /**
+   * Logs user out -> remove logged in user
+   */
+  const handleLogout = () => {
+    // perform logout actions - clear user state and local storage
+    setUser(null);
+    localStorage.removeItem('username');
+  };
+
+  return (
+    &lt;div style={{ backgroundColor: '#e2d0f3', height: '100vh' }}>
+      &lt;h1 style={{ textAlign: 'center', margin: 0, paddingTop: '50px' }}>Welcome to Game Guru!&lt;/h1>
+      {user ? (
+        &lt;>
+          &lt;p style={{ textAlign: 'center' }}>Hello, {user}! Pick a game:&lt;/p>
+          &lt;div style={{ position: 'absolute', top: '10px', right: '10px' }}>
+            &lt;button
+              onClick={handleLogout}
+              style={{
+                backgroundColor: 'red',
+                color: 'white',
+                padding: '10px 20px',
+                borderRadius: '10px',
+                cursor: 'pointer',
+              }}
+            >
+              Sign Out
+            &lt;/button>
+          &lt;/div>
+        &lt;/>
+      ) : (
+        &lt;p style={{ textAlign: 'center' }}>Sign up / Sign in :)&lt;/p>
+      )}
+      &lt;div style={{ position: 'absolute', top: '10px', left: '10px' }}>
+      &lt;a href="/dashboard">
+        &lt;button
+          style={{
+            backgroundColor: 'black',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '10px',
+            cursor: 'pointer',
+          }}
+        >
+          View Player Stats
+        &lt;/button>
+        &lt;/a>
+      &lt;/div>
+      {!user &amp;&amp; (
+        &lt;div style={{ position: 'absolute', top: '10px', right: '10px' }}>
+          &lt;a href="/login">
+            &lt;button
+              style={{
+                backgroundColor: 'black',
+                color: 'white',
+                padding: '10px 20px',
+                borderRadius: '10px',
+                cursor: 'pointer',
+              }}
+            >
+              Login
+            &lt;/button>
+          &lt;/a>
+
+          &lt;a href="/signup">
+            &lt;button
+              style={{
+                backgroundColor: 'blue',
+                color: 'white',
+                padding: '10px 20px',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                marginLeft: '10px',
+              }}
+            >
+              Signup
+            &lt;/button>
+          &lt;/a>
+        &lt;/div>
+      )}
+      {user &amp;&amp; (
+        &lt;div>
+          &lt;p style={{ textAlign: 'center' }}>
+            &lt;a href="/chess">Chess&lt;/a> | &lt;a href="/yahtzee">Yahtzee&lt;/a> | &lt;a href="/mastermind">Mastermind&lt;/a>
+          &lt;/p>
+          &lt;p style={{ textAlign: 'center' }}>
+            &lt;img
+              src={require('./assets/wking.png')}
+              style={{
+                width: '50px',
+                height: '50px',
+                margin: '10px'
+              }}
+              alt="King"
+            />
+            &lt;img
+              src={require('./assets/5.png')}
+              style={{
+                width: '50px',
+                height: '50px',
+                margin: '10px',
+                borderRadius: '25%',
+                clipPath: `inset(2px)`
+              }}
+              alt="Dice"
+            />
+            &lt;div
+              style={{
+                display: 'inline-block',
+                width: '50px',
+                height: '50px',
+                backgroundColor: 'black',
+                borderRadius: '50%',
+                margin: '10px'
+              }}
+            />
+          &lt;/p>
+        &lt;/div>
+      )}
+    &lt;/div>
+  );
+};
+
+export default Home;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Home">Home</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Dec 07 2023 16:30:36 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

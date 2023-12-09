@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Dashboard.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Dashboard.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+
+/**
+ * Dashboard component displays user statistics and provides functionality to view statistics of other users.
+ * @returns {JSX.Element} Dashboard interface with user statistics and search functionalities displayed in the UI.
+ */
+const Dashboard = () => {
+  const [username, setUsername] = useState('');
+  const [statistics, setStatistics] = useState([]);
+  const [currStatistics, setCurrStats] = useState([]);
+  const [error, setError] = useState('');
+  const [currError, setCurrError] = useState('');
+  const [currUser, setUser] = useState();
+  const [displayUser, setDisplay] = useState();
+
+  // Effect hook to retrieve the logged-in user from local storage
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem('username');
+    if (loggedInUser) {
+      setUser(loggedInUser);
+    }
+  }, []);
+
+  /**
+   * Fetches statistics for the currently logged-in user.
+   */
+  const fetchUserStats = async () => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/get-user-statistics/?username=${currUser}`);
+      if (response.data.statistics &amp;&amp; response.data.statistics.length > 0) {
+        setStatistics(response.data.statistics);
+        setDisplay(currUser);
+        setError('');
+      } else {
+        setStatistics([]);
+        setError('No user found');
+      }
+    } catch (error) {
+      console.error('Error fetching statistics:', error);
+      setStatistics([]);
+      setError(`User "${currUser}" not found`);
+    }
+  }
+
+  /**
+   * Fetches statistics for the user specified by the 'username' state.
+   */
+  const fetchStatistics = async () => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/get-user-statistics/?username=${username}`);
+      if (response.data.statistics &amp;&amp; response.data.statistics.length > 0) {
+        setStatistics(response.data.statistics);
+        setDisplay(username);
+        setError('');
+      } else {
+        setStatistics([]);
+        setError('No user found');
+      }
+    } catch (error) {
+      console.error('Error fetching statistics:', error);
+      setStatistics([]);
+      setError(`User "${username}" not found`);
+    }
+  };  
+
+  /**
+   * Handles the search action when a username is entered.
+   * Triggers the fetchStatistics function.
+   */
+  const handleSearch = () => {
+    if (username) {
+      fetchStatistics();
+    }
+  };
+
+  return (
+    &lt;div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', backgroundColor: '#f4f4f4' }}>
+      &lt;div style={{display: 'flex', justifyContent: 'center'}}>
+      &lt;a href="/">Back to Home&lt;/a>
+      &lt;/div>
+      {currUser ? (&lt;h1 style={{ textAlign: 'center', fontSize: '28px', marginBottom: '20px' }}>{currUser}, view your current statistics&lt;/h1>)
+      : (&lt;h1 style={{ textAlign: 'center', fontSize: '28px', marginBottom: '20px' }}>Log in to view your current statistics&lt;/h1>)}
+      &lt;div style={{ display: 'flex', justifyContent:'center', marginBottom: '20px'}}>
+        &lt;button onClick={fetchUserStats} style={{ textAlign: 'center', alignItems: 'center', padding: '10px 20px', borderRadius: '5px', backgroundColor: '#007bff', color: 'white', border: 'none', cursor: 'pointer' }}>Go&lt;/button>
+      &lt;/div>
+
+      &lt;h1 style={{ textAlign: 'center', fontSize: '28px', marginBottom: '20px' }}>View another user's stats&lt;/h1>
+      &lt;div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+        &lt;input
+          type="text"
+          placeholder="Enter Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          style={{ padding: '10px', borderRadius: '5px', marginRight: '10px', flex: '1' }}
+        />
+        &lt;button onClick={handleSearch} style={{ padding: '10px 20px', borderRadius: '5px', backgroundColor: '#007bff', color: 'white', border: 'none', cursor: 'pointer' }}>
+          Search
+        &lt;/button>
+      &lt;/div>
+      {error &amp;&amp; &lt;p style={{ textAlign: 'center', color: 'red' }}>{error}&lt;/p>}
+      {statistics &amp;&amp; statistics.length > 0 &amp;&amp; (
+        &lt;div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '5px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+          &lt;h2 style={{ fontSize: '24px', marginBottom: '20px' }}>Statistics for {displayUser}&lt;/h2>
+          &lt;ul style={{ listStyleType: 'none', padding: '0', margin: '0' }}>
+            {statistics.map((stat, index) => (
+              &lt;li key={index} style={{ marginBottom: '15px', border: '1px solid #ddd', padding: '15px', borderRadius: '5px' }}>
+                &lt;h2 style={{margin: '5px 0' }}>{stat.gameType}&lt;/h2>
+                &lt;p style={{ margin: '5px 0' }}>Games Played: {stat.gamesPlayed}&lt;/p>
+                {stat.gameType === 'yahtzee' ? (&lt;p style={{ margin: '5px 0' }}>High Score: {stat.gamesWon}&lt;/p>) : (&lt;p style={{ margin: '5px 0' }}>Games Won: {stat.gamesWon}&lt;/p>)}
+                &lt;p style={{ margin: '5px 0' }}>Time Played: {stat.timePlayed} seconds&lt;/p>
+              &lt;/li>
+            ))}
+          &lt;/ul>
+        &lt;/div>
+      )}
+    &lt;/div>
+  );
+};
+
+export default Dashboard;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Dashboard">Dashboard</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Dec 07 2023 16:30:23 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
