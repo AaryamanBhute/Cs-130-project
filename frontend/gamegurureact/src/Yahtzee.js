@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import axios from 'axios';
+const axios = require('axios');
 import ChatBot from './ChatBot';
 
 /**
@@ -8,7 +8,7 @@ import ChatBot from './ChatBot';
  * @param {number[]} results - An array of dice roll results (numbers 1-6).
  * @returns {number[]} - An array containing scores for different categories, in indices 0 thru 12
  */
-const calculateScores = (results) => {
+export const calculateScores = (results) => {
   const sortedResults = [...results].sort();
   const counts = {};
   sortedResults.forEach((val) => {
