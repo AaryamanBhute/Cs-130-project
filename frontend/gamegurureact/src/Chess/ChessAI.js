@@ -164,7 +164,6 @@ const minimax = (gameState, depth, alpha, beta, maximizingPlayer, player) => {
  * @returns {Object} The game state after the AI move.
  */
 export const makeAIMove = (gameState, difficulty) => {
-    console.trace('makeAIMove called');
     const moves = getValidMoves(gameState, gameState.currentPlayer);
     if (!moves.length) {
         return gameState;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ChatBot from './ChatBot';
-import axios from 'axios';
+const axios = require('axios');
 
 /**
  * Represents the game board for a Mastermind-like game.

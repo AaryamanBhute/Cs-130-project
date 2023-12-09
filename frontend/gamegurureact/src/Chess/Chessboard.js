@@ -6,12 +6,12 @@
  */
 
 // Import necessary hooks and utilities
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useChessGameState } from './ChessGameState';
 import { getValidMoves } from './PieceMovement';
-import axios from 'axios' // Used for making HTTP requests
 import ChatBot from '../ChatBot'; // Import ChatBot component
 import Modal from 'react-modal'; // Import Modal component for displaying modals
+const axios = require('axios'); // Used for making HTTP requests
 
 /**
  * Chessboard component.
@@ -143,6 +143,7 @@ const Chessboard = () => {
      */
     return (
       <div key={`${row}-${col}`}
+        role='square'
         style={{ ...squareStyle,
           width: isSelected ? `${squareSize-4}px` : `${squareSize}px`,
           height: isSelected ? `${squareSize-4}px` : `${squareSize}px`,
@@ -371,9 +372,9 @@ const Chessboard = () => {
     <h1 style={{ marginTop: '0px', paddingTop: '40px', font: 'bold 50px Arial', textAlign: 'center', color: '#eeeeee' }}>Chess</h1>
     <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', margin: '20px' }}>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: `${squareSize*2}px` }}>
-        <CapturedPieces player={!gameState.whiteOnBottom ? 'White' : 'Black'} pieces={gameState.whiteCapturedPieces} />
+        <CapturedPieces player={!gameState.whiteOnBottom ? 'White' : 'Black'} pieces={!gameState.whiteOnBottom ? gameState.whiteCapturedPieces : gameState.blackCapturedPieces} />
         <h1 style={{ font: 'bold 25px Arial', textAlign: 'center', color: '#eeeeee' }}>{message}</h1>
-        <CapturedPieces player={gameState.whiteOnBottom ? 'White' : 'Black'} pieces={gameState.blackCapturedPieces} />
+        <CapturedPieces player={gameState.whiteOnBottom ? 'White' : 'Black'} pieces={gameState.whiteOnBottom ? gameState.whiteCapturedPieces : gameState.blackCapturedPieces} />
       </div>
       <div className="chessboard-container" style={{ border: '10px solid black', margin: '20px' }}>
         {/* Render each row */}

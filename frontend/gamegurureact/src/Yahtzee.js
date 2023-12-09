@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-
-const axios = require('axios');
 import ChatBot from './ChatBot';
+const axios = require('axios');
 
 /**
  * Calculates scores based on given dice roll results.
