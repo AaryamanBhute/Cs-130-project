@@ -160,6 +160,20 @@ export const getValidMoves = (gameState, player) => {
         for (let endRow = 0; endRow < 8; endRow++) {
           for (let endCol = 0; endCol < 8; endCol++) {
             const move = validateMove(gameState, startRow, startCol, endRow, endCol);
+            if (move.castle) {
+              const kingPosition = getKingPosition(gameState, player);
+              for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                  const opponentPiece = gameState.board[row][col];
+                  if (opponentPiece && opponentPiece[0] !== player) {
+                    const opponentMove = validateMove(gameState, row, col, kingPosition.row, kingPosition.col);
+                    if (opponentMove.valid) {
+                      move.valid = false;
+                    }
+                  }
+                }
+              }
+            }
             if (move.valid) {
               const newGameState = makeMove(gameState, move);
               const kingPosition = getKingPosition(newGameState, player);

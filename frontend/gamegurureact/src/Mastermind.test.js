@@ -1,3 +1,5 @@
+// Chess tests can be found in Chess directory
+
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Mastermind from './Mastermind';

@@ -13,9 +13,9 @@ import { makeAIMove } from './ChessAI';
  * Create the initial chessboard.
  * @function createInitialBoard
  * @param {boolean} isWhiteOnBottom - If true, the white pieces are on the bottom of the board.
- * @returns {Array} The initial chessboard.
+ * @returns {Object} The initial chessboard.
  */
-const createInitialBoard = (isWhiteOnBottom) => {
+export const createInitialBoard = (isWhiteOnBottom) => {
   /**
    * The order of the pieces on the chessboard.
    * @type {Array}
@@ -251,6 +251,7 @@ export const useChessGameState = () => {
      * @type {Object}
      */
     const playerGameState = makeMove(gameState, move);
+    console.log(timeLimit)
 
     /**
      * Check the game state after the player's move.
@@ -363,5 +364,7 @@ export const useChessGameState = () => {
     resetGame,
     message,
     seconds,
+    timeLimit,
+    gameOver
   };
 };
