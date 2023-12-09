@@ -2,6 +2,10 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+/**
+ * Returns change password page
+ * @returns {JSX.Element}
+ */
 const ChangePwd = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -9,6 +13,10 @@ const ChangePwd = () => {
   const navigate = useNavigate();
   const [errorMessage, setError] = useState('');
 
+  /**
+   * change password through an axios call to the database
+   * @param {*} e - event, triggered when change password button clicked
+   */
   const handleChangePwd = async (e) => {
     e.preventDefault();
     
