@@ -29,6 +29,7 @@ jobs:
     - run: npm ci
     - run: |
         cd frontend/gamegurureact/src
+        npm install --save react-modal
         npm install
     - run: |
         cd frontend/gamegurureact/src
