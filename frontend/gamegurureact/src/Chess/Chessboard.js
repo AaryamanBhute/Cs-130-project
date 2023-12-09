@@ -9,7 +9,7 @@
 import { useState, useEffect } from 'react';
 import { useChessGameState } from './ChessGameState';
 import { getValidMoves } from './PieceMovement';
-import axios from 'axios' // Used for making HTTP requests
+const axios = require('axios'); // Used for making HTTP requests
 import ChatBot from '../ChatBot'; // Import ChatBot component
 import Modal from 'react-modal'; // Import Modal component for displaying modals
 
